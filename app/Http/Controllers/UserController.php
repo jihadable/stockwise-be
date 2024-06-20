@@ -10,7 +10,9 @@ class UserController extends Controller{
     }
 
     public function get_user_profile(){
-        
+        return response()->json([
+            "status" => "success"
+        ], 200);
     }
 
     public function register(Request $request){
