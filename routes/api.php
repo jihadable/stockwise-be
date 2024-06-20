@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
+use App\Http\Middleware\JwtMiddleware;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // get user profile
-Route::get("/users", [UserController::class, "get_user_profile"]);
+Route::get("/users", [UserController::class, "get_user_profile"])->middleware(JwtMiddleware::class);
 
 // register
 Route::post("/users/register", [UserController::class, "register"]);
