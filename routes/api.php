@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::get("/users", [UserController::class, "get_user_profile"]);
 
 // register
-Route::get("/register", [UserController::class, "register"]);
+Route::post("/users/register", [UserController::class, "register"]);
 
 // login
-Route::get("/login", [UserController::class, "login"]);
+Route::post("/users/login", [UserController::class, "login"]);
