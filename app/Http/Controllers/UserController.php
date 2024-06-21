@@ -11,8 +11,15 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class UserController extends Controller{
     public function get_user_profile(){
         $user = JWTAuth::parseToken()->authenticate();
+        $products = $user->products;
 
-        return response()->json($user->response(), 200);
+        return response()->json([
+            ...ResponseDefault::create(200, true, "Get user profile successfully"),
+            "user" => $user->response(),
+            "products" => $products->map(function($product){
+                return $product->response();
+            })
+        ], 200);
     }
 
     public function register(Request $request){

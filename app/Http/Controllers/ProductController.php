@@ -3,64 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
+use App\Utils\ResponseDefault;
+use Faker\Factory as Faker;
+use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
-class ProductController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
+class ProductController extends Controller {
+    public function store(Request $request){
+        $user = JWTAuth::parseToken()->authenticate();
+        $user_id = $user->id;
+        $slug = Faker::create()->uuid;
+
+        Product::create([...$request->all(), "user_id" => $user_id, "slug" => $slug]);
+
+        return response()->json(ResponseDefault::create(202, true, "Stored product successfully"), 202);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    public function delete($slug){
+        $product = Product::where("slug", $slug)->first();
+
+        if (!$product){
+            return response()->json(ResponseDefault::create(404, false, "Product not found"), 404);
+        }
+        
+        return response()->json(["slug" => $slug]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreProductRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Product $product)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Product $product)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateProductRequest $request, Product $product)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
-    {
-        //
+    public function update(Request $request, $slug){
+        
     }
 }
