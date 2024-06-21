@@ -16,20 +16,31 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// get user profile
-Route::get("/users", [UserController::class, "get_user_profile"])->middleware(JwtMiddleware::class);
+// users route
+Route::prefix("/users")->group(function(){
 
-// register
-Route::post("/users/register", [UserController::class, "register"]);
+    // get user profile
+    Route::get("/", [UserController::class, "get_user_profile"])->middleware(JwtMiddleware::class);
+    
+    // register
+    Route::post("/register", [UserController::class, "register"]);
+    
+    // login
+    Route::post("/login", [UserController::class, "login"]);
+});
 
-// login
-Route::post("/users/login", [UserController::class, "login"]);
+// products route
+Route::prefix("/products")->group(function(){
 
-// store product
-Route::post("/products", [ProductController::class, "store"])->middleware(JwtMiddleware::class);
-
-// delete product
-Route::delete("/products/{slug}", [ProductController::class, "delete"])->middleware(JwtMiddleware::class);
-
-// update product
-Route::patch("/products/{slug}", [ProductController::class, "update"])->middleware(JwtMiddleware::class);
+    // get all products by user
+    Route::get("/", [ProductController::class, "index"])->middleware(JwtMiddleware::class);
+    
+    // store product
+    Route::post("/", [ProductController::class, "store"])->middleware(JwtMiddleware::class);
+    
+    // delete product
+    Route::delete("/{slug}", [ProductController::class, "delete"])->middleware(JwtMiddleware::class);
+    
+    // update product
+    Route::patch("/{slug}", [ProductController::class, "update"])->middleware(JwtMiddleware::class);
+});

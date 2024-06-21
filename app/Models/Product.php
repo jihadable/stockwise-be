@@ -14,6 +14,7 @@ class Product extends Model {
         "slug",
         "name",
         "category",
+        "price",
         "quantity",
         "image",
         "description"
@@ -25,6 +26,7 @@ class Product extends Model {
             "slug" => $this->slug,  
             "name" => $this->name,
             "category" => $this->category,
+            "price" => $this->price,
             "quantity" => $this->quantity,
             "image" => $this->image,
             "description" => $this->description,
