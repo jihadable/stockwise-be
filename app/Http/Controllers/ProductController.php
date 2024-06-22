@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Utils\ResponseDefault;
 use Faker\Factory as Faker;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ProductController extends Controller {
@@ -26,7 +27,14 @@ class ProductController extends Controller {
         $user_id = $user->id;
         $slug = Faker::create()->uuid;
 
-        Product::create([...$request->all(), "user_id" => $user_id, "slug" => $slug]);
+        if ($request->hasFile("image")){
+            $imagePath = $request->file("image")->store("images");
+        }
+        else {
+            $imagePath = null;
+        }
+
+        Product::create([...$request->all(), "user_id" => $user_id, "slug" => $slug, "image" => $imagePath]);
 
         return response()->json(ResponseDefault::create(202, true, "Stored product successfully"), 202);
     }
@@ -36,6 +44,10 @@ class ProductController extends Controller {
 
         if (!$product){
             return response()->json(ResponseDefault::create(404, false, "Product not found"), 404);
+        }
+
+        if ($product->image){
+            Storage::delete($product->image);
         }
 
         $product->delete();
@@ -50,7 +62,18 @@ class ProductController extends Controller {
             return response()->json(ResponseDefault::create(404, false, "Product not found"), 404);
         }
 
-        $product->update($request->all());
+        if ($request->hasFile("image")){
+            if ($product->image){
+                Storage::delete($product->image);
+            }
+
+            $imagePath = $request->file("image")->store("images");
+        }
+        else {
+            $imagePath = $product->image;
+        }
+
+        $product->update([...$request->all(), "image" => $imagePath]);
 
         return response()->json(ResponseDefault::create(200, true, "Updated product successfully"));
     }
