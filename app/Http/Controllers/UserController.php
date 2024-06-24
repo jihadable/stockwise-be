@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class UserController extends Controller{
+class UserController extends Controller {
     public function get_user_profile(){
         $user = JWTAuth::parseToken()->authenticate();
 
@@ -54,5 +54,13 @@ class UserController extends Controller{
             ...ResponseDefault::create(200, true, "User logged in successfully"),
             "token" => $token
         ], 200);
+    }
+
+    public function update(Request $request){
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $user->update([...$request->all()]);
+
+        return response()->json(ResponseDefault::create(200, true, "Updated user profile successfully"));
     }
 }

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // users route
-Route::prefix("/users")->group(function(){
+Route::prefix("/users")->middleware("throttle:30,1")->group(function(){
 
     // get user profile
     Route::get("/", [UserController::class, "get_user_profile"])->middleware(JwtMiddleware::class);
@@ -27,10 +27,13 @@ Route::prefix("/users")->group(function(){
     
     // login
     Route::post("/login", [UserController::class, "login"]);
+
+    // update user profile
+    Route::patch("/", [UserController::class, "update"])->middleware(JwtMiddleware::class);
 });
 
 // products route
-Route::prefix("/products")->group(function(){
+Route::prefix("/products")->middleware("throttle:30,1")->group(function(){
 
     // get all products by user
     Route::get("/", [ProductController::class, "index"])->middleware(JwtMiddleware::class);
