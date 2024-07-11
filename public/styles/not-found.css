@@ -1,0 +1,45 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body{
+    background: linear-gradient(45deg, transparent 49%, #0d1f2d 49% 51%, transparent 51%) , linear-gradient(-45deg, transparent 49%, #0d1f2d 49% 51%, transparent 51%);
+    background-size: 3em 3em;
+    background-color: #000000;
+    opacity: 1;
+    height: 100Vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem;
+    border-radius: 1rem;
+    background-color: white;
+
+    & .status {
+        font-size: 5rem;
+        color: #0d1f2d;
+    }
+
+    & .title {
+        font-size: 2.5rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    body {
+        padding: 0 1rem;
+    }
+
+    .container {
+        width: 100%;
+    }
+}
