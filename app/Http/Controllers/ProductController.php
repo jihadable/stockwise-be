@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Utils\ResponseDefault;
-use Faker\Factory as Faker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller {
     public function index(){
@@ -38,7 +38,7 @@ class ProductController extends Controller {
 
         $user = JWTAuth::parseToken()->authenticate();
         $user_id = $user->id;
-        $slug = Faker::create()->uuid;
+        $slug = Str::uuid();
 
         if ($request->hasFile("image")){
             $imageData = file_get_contents($request->file('image')->getRealPath());
