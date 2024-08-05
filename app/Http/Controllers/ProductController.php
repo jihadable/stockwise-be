@@ -38,7 +38,7 @@ class ProductController extends Controller {
 
         $user = JWTAuth::parseToken()->authenticate();
         $user_id = $user->id;
-        $slug = Str::uuid();
+        $slug = (string) Str::uuid();
 
         if ($request->hasFile("image")){
             $imageData = file_get_contents($request->file('image')->getRealPath());
