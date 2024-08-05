@@ -28,7 +28,7 @@ class Product extends Model {
             "category" => $this->category,
             "price" => $this->price,
             "quantity" => $this->quantity,
-            "image" => $this->slug,
+            "image" => $this->image,
             "description" => $this->description,
         ];
     }
