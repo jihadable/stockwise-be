@@ -17,3 +17,5 @@ use Illuminate\Support\Facades\Route;
 Route::get("/", function () {
     return view('index');
 });
+
+Route::get("/images/{slug}", [ProductController::class, "showImage"]);
