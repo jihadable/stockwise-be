@@ -6,7 +6,6 @@ use App\Models\Product;
 use App\Utils\ResponseDefault;
 use Faker\Factory as Faker;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -42,7 +41,10 @@ class ProductController extends Controller {
         $slug = Faker::create()->uuid;
 
         if ($request->hasFile("image")){
-            $imagePath = $request->file("image")->store("images");
+            $imageData = file_get_contents($request->file('image')->getRealPath());
+            $base64Image = base64_encode($imageData);
+            $mimeType = $request->file('image')->getClientMimeType();
+            $imagePath = "data:$mimeType;base64,$base64Image";
         }
         else {
             $imagePath = null;
@@ -61,10 +63,6 @@ class ProductController extends Controller {
 
         if (!$product){
             return response()->json(ResponseDefault::create(404, false, "Produk tidak ditemukan"), 404);
-        }
-
-        if ($product->image){
-            Storage::delete($product->image);
         }
 
         $product->delete();
@@ -93,11 +91,10 @@ class ProductController extends Controller {
         }
 
         if ($request->hasFile("image")){
-            if ($product->image){
-                Storage::delete($product->image);
-            }
-
-            $imagePath = $request->file("image")->store("images");
+            $imageData = file_get_contents($request->file('image')->getRealPath());
+            $base64Image = base64_encode($imageData);
+            $mimeType = $request->file('image')->getClientMimeType();
+            $imagePath = "data:$mimeType;base64,$base64Image";
         }
         else {
             $imagePath = $product->image;
