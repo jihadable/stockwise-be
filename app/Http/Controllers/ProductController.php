@@ -107,19 +107,4 @@ class ProductController extends Controller {
             "product" => $product->response()
         ], 200);
     }
-
-    public function showImage($slug){
-        $product = Product::where('slug', $slug)->firstOrFail();
-        
-        $imageData = $product->image;
-        
-        list(, $imageData) = explode(';', $imageData);
-        list(, $imageData)      = explode(',', $imageData);
-        
-        $imageData = base64_decode($imageData);
-        
-        $mimeType = 'image/jpg';
-
-        return response($imageData)->header('Content-Type', $mimeType);
-    }
 }
