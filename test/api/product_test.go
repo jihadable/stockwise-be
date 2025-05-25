@@ -20,6 +20,7 @@ var productIdWithImage string
 func TestPostProductWithoutImage(t *testing.T) {
 	requestBody := RequestBodyParser(request.ProductRequest{
 		Name:        "product 1",
+		Category:    "category 1",
 		Price:       1,
 		Quantity:    1,
 		Description: "description 1",
@@ -45,6 +46,7 @@ func TestPostProductWithoutImage(t *testing.T) {
 	assert.NotEmpty(t, product["id"])
 	productIdWithoutImage = product["id"].(string)
 	assert.Equal(t, "product 1", product["name"])
+	assert.Equal(t, "category 1", product["category"])
 	assert.Equal(t, float64(1), product["price"])
 	assert.Equal(t, float64(1), product["quantity"])
 	assert.Nil(t, product["image"])
@@ -63,6 +65,7 @@ func TestPostProductWithImage(t *testing.T) {
 	writer := multipart.NewWriter(&requestBody)
 
 	_ = writer.WriteField("name", "product 2")
+	_ = writer.WriteField("category", "category 2")
 	_ = writer.WriteField("price", "2")
 	_ = writer.WriteField("quantity", "2")
 	_ = writer.WriteField("description", "description 2")
@@ -94,6 +97,7 @@ func TestPostProductWithImage(t *testing.T) {
 	assert.NotEmpty(t, product["id"])
 	productIdWithImage = product["id"].(string)
 	assert.Equal(t, "product 2", product["name"])
+	assert.Equal(t, "category 2", product["category"])
 	assert.Equal(t, float64(2), product["price"])
 	assert.Equal(t, float64(2), product["quantity"])
 	assert.NotNil(t, product["image"])
@@ -204,6 +208,7 @@ func TestGetProductByIdWithInvalidId(t *testing.T) {
 func TestUpdateProductByIdWithoutImage(t *testing.T) {
 	requestBody := RequestBodyParser(request.ProductRequest{
 		Name:        "update product 1",
+		Category:    "update category 1",
 		Price:       1,
 		Quantity:    1,
 		Description: "update description 1",
@@ -228,6 +233,7 @@ func TestUpdateProductByIdWithoutImage(t *testing.T) {
 
 	assert.NotEmpty(t, product["id"])
 	assert.Equal(t, "update product 1", product["name"])
+	assert.Equal(t, "update category 1", product["category"])
 	assert.Equal(t, float64(1), product["price"])
 	assert.Equal(t, float64(1), product["quantity"])
 	assert.NotNil(t, product["image"])
@@ -246,6 +252,7 @@ func TestUpdateProductByIdWithImage(t *testing.T) {
 	writer := multipart.NewWriter(&requestBody)
 
 	_ = writer.WriteField("name", "update product 2")
+	_ = writer.WriteField("category", "update category 2")
 	_ = writer.WriteField("price", "2")
 	_ = writer.WriteField("quantity", "2")
 	_ = writer.WriteField("description", "update description 2")
@@ -276,6 +283,7 @@ func TestUpdateProductByIdWithImage(t *testing.T) {
 
 	assert.NotEmpty(t, product["id"])
 	assert.Equal(t, "update product 2", product["name"])
+	assert.Equal(t, "update category 2", product["category"])
 	assert.Equal(t, float64(2), product["price"])
 	assert.Equal(t, float64(2), product["quantity"])
 	assert.NotNil(t, product["image"])

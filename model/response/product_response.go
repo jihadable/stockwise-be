@@ -5,6 +5,7 @@ import "time"
 type ProductResponse struct {
 	Id          string    `json:"id"`
 	Name        string    `json:"name"`
+	Category    string    `json:"category"`
 	Price       float32   `json:"price"`
 	Quantity    int       `json:"quantity"`
 	Image       *string   `json:"image"`

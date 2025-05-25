@@ -9,6 +9,7 @@ import (
 func RequestToProduct(request *request.ProductRequest) *entity.Product {
 	return &entity.Product{
 		Name:        request.Name,
+		Category:    request.Category,
 		Price:       request.Price,
 		Quantity:    request.Quantity,
 		Description: request.Description,
@@ -20,6 +21,7 @@ func ProductToResponse(product *entity.Product) *response.ProductResponse {
 	return &response.ProductResponse{
 		Id:          product.Id,
 		Name:        product.Name,
+		Category:    product.Category,
 		Price:       product.Price,
 		Quantity:    product.Quantity,
 		Image:       product.Image,
