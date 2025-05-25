@@ -14,7 +14,6 @@ func TestPostUserWithValidPayload(t *testing.T) {
 		Username: "username 1",
 		Email:    "email1@mail.com",
 		Password: "password 1",
-		Bio:      "bio 1",
 	})
 	request := httptest.NewRequest(fiber.MethodPost, "/api/users/register", requestBody)
 	request.Header.Set("Content-Type", "application/json")
@@ -41,7 +40,6 @@ func TestPostUserWithValidPayload(t *testing.T) {
 	assert.NotEmpty(t, user["id"])
 	assert.Equal(t, "username 1", user["username"])
 	assert.Equal(t, "email1@mail.com", user["email"])
-	assert.Equal(t, "bio 1", user["bio"])
 
 	t.Log("✅")
 }
@@ -159,7 +157,6 @@ func TestGetUserByIdWithoutToken(t *testing.T) {
 func TestUpdateUserByIdWithValidPayload(t *testing.T) {
 	requestBody := RequestBodyParser(request.UpdateUserRequest{
 		Username: "username 2",
-		Bio:      "bio 2",
 	})
 	request := httptest.NewRequest(fiber.MethodPut, "/api/users", requestBody)
 	request.Header.Set("Content-Type", "application/json")
@@ -182,7 +179,6 @@ func TestUpdateUserByIdWithValidPayload(t *testing.T) {
 	assert.NotEmpty(t, user["id"])
 	assert.Equal(t, "username 2", user["username"])
 	assert.Equal(t, "email1@mail.com", user["email"])
-	assert.Equal(t, "bio 2", user["bio"])
 
 	t.Log("✅")
 }

@@ -1,10 +1,10 @@
 package request
 
 type UserRequest struct {
-	Username string `json:"username" validate:"required"`
-	Email    string `json:"email" validate:"required"`
-	Password string `json:"password" validate:"required"`
-	Bio      string `json:"bio" validate:"required"`
+	Username string  `json:"username" validate:"required"`
+	Email    string  `json:"email" validate:"required"`
+	Password string  `json:"password" validate:"required"`
+	Bio      *string `json:"bio"`
 }
 
 type LoginRequest struct {
@@ -13,6 +13,6 @@ type LoginRequest struct {
 }
 
 type UpdateUserRequest struct {
-	Username string `json:"username" validate:"required"`
-	Bio      string `json:"bio" validate:"required"`
+	Username string  `json:"username" validate:"required"`
+	Bio      *string `json:"bio"`
 }
