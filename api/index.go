@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"stockwise-be/database"
+	"stockwise-be/middlewares"
 	"stockwise-be/routes"
 
 	"github.com/gofiber/fiber/v2"
@@ -30,7 +31,7 @@ func handler() http.HandlerFunc {
 
 	app := fiber.New()
 
-	api := app.Group("/api")
+	api := app.Group("/api", middlewares.ErrorHandler())
 	db := database.DB()
 	routes.RegisterUserRoutes(api, db)
 	routes.RegisterProductRoutes(api, db)
