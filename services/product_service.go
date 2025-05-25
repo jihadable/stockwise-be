@@ -33,7 +33,6 @@ func (service *ProductServiceImpl) AddProduct(image request.ImageRequest, produc
 		product.Image = &imagePath
 	}
 	product.Id = uuid.NewString()
-	product.Slug = uuid.NewString()
 	result := service.DB.Create(&product)
 
 	err := result.Error

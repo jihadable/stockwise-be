@@ -19,7 +19,6 @@ func RequestToProduct(request *request.ProductRequest) *entity.Product {
 func ProductToResponse(product *entity.Product) *response.ProductResponse {
 	return &response.ProductResponse{
 		Id:          product.Id,
-		Slug:        product.Slug,
 		Name:        product.Name,
 		Price:       product.Price,
 		Quantity:    product.Quantity,

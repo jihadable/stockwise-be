@@ -44,7 +44,6 @@ func TestPostProductWithoutImage(t *testing.T) {
 
 	assert.NotEmpty(t, product["id"])
 	productIdWithoutImage = product["id"].(string)
-	assert.NotEmpty(t, product["slug"])
 	assert.Equal(t, "product 1", product["name"])
 	assert.Equal(t, float64(1), product["price"])
 	assert.Equal(t, float64(1), product["quantity"])
@@ -177,7 +176,6 @@ func TestGetProductByIdWithValidId(t *testing.T) {
 	assert.True(t, ok)
 
 	assert.NotEmpty(t, product["id"])
-	assert.NotEmpty(t, product["slug"])
 	assert.Equal(t, "product 1", product["name"])
 	assert.Equal(t, float64(1), product["price"])
 	assert.Equal(t, float64(1), product["quantity"])
@@ -229,7 +227,6 @@ func TestUpdateProductByIdWithoutImage(t *testing.T) {
 	assert.True(t, ok)
 
 	assert.NotEmpty(t, product["id"])
-	assert.NotEmpty(t, product["slug"])
 	assert.Equal(t, "update product 1", product["name"])
 	assert.Equal(t, float64(1), product["price"])
 	assert.Equal(t, float64(1), product["quantity"])
@@ -278,7 +275,6 @@ func TestUpdateProductByIdWithImage(t *testing.T) {
 	assert.True(t, ok)
 
 	assert.NotEmpty(t, product["id"])
-	assert.NotEmpty(t, product["slug"])
 	assert.Equal(t, "update product 2", product["name"])
 	assert.Equal(t, float64(2), product["price"])
 	assert.Equal(t, float64(2), product["quantity"])
