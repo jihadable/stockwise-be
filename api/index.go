@@ -20,7 +20,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 // building the fiber application
 func handler() http.HandlerFunc {
-	err := godotenv.Load("../.env")
+	err := godotenv.Load(".env")
 	if err != nil {
 		panic("Failed to read .env file: " + err.Error())
 	}
