@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 	"stockwise-be/database"
 	"stockwise-be/routes"
 
@@ -20,9 +22,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 // building the fiber application
 func handler() http.HandlerFunc {
-	err := godotenv.Load(".env")
-	if err != nil {
-		panic("Failed to read .env file: " + err.Error())
+	if os.Getenv("VERCEL_ENV") == "" {
+		if err := godotenv.Load(".env"); err != nil {
+			fmt.Println("Warning: .env file not found, using environment variables instead.")
+		}
 	}
 
 	app := fiber.New()
