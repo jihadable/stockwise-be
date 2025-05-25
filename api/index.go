@@ -10,6 +10,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/adaptor"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 )
 
@@ -30,6 +31,8 @@ func handler() http.HandlerFunc {
 	}
 
 	app := fiber.New()
+
+	app.Use(cors.New(cors.ConfigDefault))
 
 	api := app.Group("/api", middlewares.ErrorHandler())
 	db := database.DB()
