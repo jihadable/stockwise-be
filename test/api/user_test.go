@@ -2,8 +2,9 @@ package api
 
 import (
 	"net/http/httptest"
-	"stockwise-be/model/request"
 	"testing"
+
+	"github.com/jihadable/stockwise-be/model/request"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"

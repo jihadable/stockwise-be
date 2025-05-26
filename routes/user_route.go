@@ -1,10 +1,10 @@
 package routes
 
 import (
-	"stockwise-be/handlers"
-	"stockwise-be/middlewares"
-	"stockwise-be/services"
-	"stockwise-be/validator"
+	"github.com/jihadable/stockwise-be/handlers"
+	"github.com/jihadable/stockwise-be/middlewares"
+	"github.com/jihadable/stockwise-be/services"
+	"github.com/jihadable/stockwise-be/validator"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"

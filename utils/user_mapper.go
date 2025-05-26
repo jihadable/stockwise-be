@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"stockwise-be/model/entity"
-	"stockwise-be/model/request"
-	"stockwise-be/model/response"
+	"github.com/jihadable/stockwise-be/model/entity"
+	"github.com/jihadable/stockwise-be/model/request"
+	"github.com/jihadable/stockwise-be/model/response"
 )
 
 func RequestToUser(request *request.UserRequest) *entity.User {

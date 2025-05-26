@@ -1,10 +1,10 @@
 package services
 
 import (
-	"stockwise-be/model/entity"
-	"stockwise-be/model/request"
-	"stockwise-be/model/response"
-	"stockwise-be/utils"
+	"github.com/jihadable/stockwise-be/model/entity"
+	"github.com/jihadable/stockwise-be/model/request"
+	"github.com/jihadable/stockwise-be/model/response"
+	"github.com/jihadable/stockwise-be/utils"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"

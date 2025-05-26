@@ -1,4 +1,4 @@
-module stockwise-be
+module github.com/jihadable/stockwise-be
 
 go 1.24.2
 

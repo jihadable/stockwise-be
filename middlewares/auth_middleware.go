@@ -2,8 +2,9 @@ package middlewares
 
 import (
 	"os"
-	"stockwise-be/services"
 	"strings"
+
+	"github.com/jihadable/stockwise-be/services"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"

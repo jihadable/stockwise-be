@@ -2,7 +2,8 @@ package middlewares
 
 import (
 	"path/filepath"
-	"stockwise-be/model/request"
+
+	"github.com/jihadable/stockwise-be/model/request"
 
 	"github.com/gofiber/fiber/v2"
 )

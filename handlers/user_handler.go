@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"stockwise-be/model/request"
-	"stockwise-be/services"
-	"stockwise-be/utils"
-	"stockwise-be/validator"
+	"github.com/jihadable/stockwise-be/model/request"
+	"github.com/jihadable/stockwise-be/services"
+	"github.com/jihadable/stockwise-be/utils"
+	"github.com/jihadable/stockwise-be/validator"
 
 	"github.com/gofiber/fiber/v2"
 )

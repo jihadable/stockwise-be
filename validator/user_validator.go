@@ -1,8 +1,8 @@
 package validator
 
 import (
-	"stockwise-be/model/request"
-	"stockwise-be/utils"
+	"github.com/jihadable/stockwise-be/model/request"
+	"github.com/jihadable/stockwise-be/utils"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"

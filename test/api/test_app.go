@@ -1,9 +1,9 @@
 package api
 
 import (
-	"stockwise-be/database"
-	"stockwise-be/middlewares"
-	"stockwise-be/routes"
+	"github.com/jihadable/stockwise-be/database"
+	"github.com/jihadable/stockwise-be/middlewares"
+	"github.com/jihadable/stockwise-be/routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"

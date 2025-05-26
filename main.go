@@ -1,10 +1,10 @@
 package main
 
 import (
-	"stockwise-be/database"
-	"stockwise-be/middlewares"
-	"stockwise-be/model/entity"
-	"stockwise-be/routes"
+	"github.com/jihadable/stockwise-be/database"
+	"github.com/jihadable/stockwise-be/middlewares"
+	"github.com/jihadable/stockwise-be/model/entity"
+	"github.com/jihadable/stockwise-be/routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	err := godotenv.Load(".env")
+	err := godotenv.Load(".env.local")
 	if err != nil {
 		panic("Failed to read .env file: " + err.Error())
 	}
