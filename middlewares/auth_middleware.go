@@ -4,13 +4,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/jihadable/stockwise-be/services"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func AuthMiddleware(userService services.UserService) fiber.Handler {
+func AuthMiddleware() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		authHeader := ctx.Get("Authorization")
 		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
@@ -32,11 +30,6 @@ func AuthMiddleware(userService services.UserService) fiber.Handler {
 		}
 
 		userId := claims["user_id"].(string)
-
-		_, err = userService.GetUserById(userId)
-		if err != nil {
-			return fiber.NewError(fiber.StatusUnauthorized, "Pengguna tidak terdaftar")
-		}
 
 		ctx.Locals("user_id", userId)
 		return ctx.Next()

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/jihadable/stockwise-be/database"
+	"github.com/jihadable/stockwise-be/config"
 	"github.com/jihadable/stockwise-be/middlewares"
 	"github.com/jihadable/stockwise-be/model/entity"
 	"github.com/jihadable/stockwise-be/routes"
@@ -22,15 +22,18 @@ func main() {
 	app.Use(cors.New(cors.ConfigDefault))
 
 	api := app.Group("/api", middlewares.ErrorHandler())
-	db := database.DB()
+	config := &config.Config{
+		DB:    config.DB(),
+		Redis: config.Redis(),
+	}
 
-	err = db.AutoMigrate(&entity.User{}, &entity.Product{})
+	err = config.DB.AutoMigrate(&entity.User{}, &entity.Product{})
 	if err != nil {
 		panic(err)
 	}
 
-	routes.RegisterUserRoutes(api, db)
-	routes.RegisterProductRoutes(api, db)
+	routes.RegisterUserRoutes(api, config)
+	routes.RegisterProductRoutes(api, config)
 
 	err = app.Listen(":3000")
 	if err != nil {

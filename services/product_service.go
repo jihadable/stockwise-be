@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/jihadable/stockwise-be/config"
 	"github.com/jihadable/stockwise-be/model/entity"
 	"github.com/jihadable/stockwise-be/model/request"
 	"github.com/jihadable/stockwise-be/model/response"
@@ -136,6 +137,6 @@ func (service *ProductServiceImpl) DeleteProductById(id string) error {
 	return nil
 }
 
-func NewProductService(db *gorm.DB) ProductService {
-	return &ProductServiceImpl{DB: db, StorageService: NewStorageService()}
+func NewProductService(config *config.Config) ProductService {
+	return &ProductServiceImpl{DB: config.DB, StorageService: NewStorageService()}
 }

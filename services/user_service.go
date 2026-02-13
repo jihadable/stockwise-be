@@ -1,9 +1,11 @@
 package services
 
 import (
+	"github.com/jihadable/stockwise-be/config"
 	"github.com/jihadable/stockwise-be/model/entity"
 	"github.com/jihadable/stockwise-be/model/response"
 	"github.com/jihadable/stockwise-be/utils"
+	"github.com/redis/go-redis/v9"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -19,7 +21,8 @@ type UserService interface {
 }
 
 type UserServiceImpl struct {
-	DB *gorm.DB
+	DB    *gorm.DB
+	Redis *redis.Client
 }
 
 func (service *UserServiceImpl) AddUser(user entity.User) (response.UserResponse, error) {
@@ -93,6 +96,6 @@ func (service *UserServiceImpl) VerifyUser(email, password string) (response.Use
 	return *utils.UserToResponse(&user), nil
 }
 
-func NewUserService(db *gorm.DB) UserService {
-	return &UserServiceImpl{DB: db}
+func NewUserService(config *config.Config) UserService {
+	return &UserServiceImpl{DB: config.DB, Redis: config.Redis}
 }

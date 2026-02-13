@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/jihadable/stockwise-be/database"
+	"github.com/jihadable/stockwise-be/config"
 	"github.com/jihadable/stockwise-be/middlewares"
 	"github.com/jihadable/stockwise-be/routes"
 
@@ -18,9 +18,12 @@ func TestApp() *fiber.App {
 	app := fiber.New()
 
 	api := app.Group("/api", middlewares.ErrorHandler())
-	db := database.DB()
-	routes.RegisterUserRoutes(api, db)
-	routes.RegisterProductRoutes(api, db)
+	config := &config.Config{
+		DB:    config.DB(),
+		Redis: config.Redis(),
+	}
+	routes.RegisterUserRoutes(api, config)
+	routes.RegisterProductRoutes(api, config)
 
 	return app
 }
