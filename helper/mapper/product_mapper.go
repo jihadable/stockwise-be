@@ -1,4 +1,4 @@
-package utils
+package mapper
 
 import (
 	"github.com/jihadable/stockwise-be/model/entity"
@@ -31,10 +31,10 @@ func ProductToResponse(product *entity.Product) *response.ProductResponse {
 	}
 }
 
-func ProductsToResponses(products []entity.Product) []response.ProductResponse {
-	responses := make([]response.ProductResponse, len(products))
+func ProductsToResponses(products []*entity.Product) []*response.ProductResponse {
+	responses := make([]*response.ProductResponse, len(products))
 	for i, p := range products {
-		responses[i] = *ProductToResponse(&p)
+		responses[i] = ProductToResponse(p)
 	}
 	return responses
 }

@@ -1,12 +1,12 @@
 package handlers
 
 import (
+	"github.com/gofiber/fiber/v2"
+	"github.com/jihadable/stockwise-be/helper/mapper"
+	"github.com/jihadable/stockwise-be/model/entity"
 	"github.com/jihadable/stockwise-be/model/request"
 	"github.com/jihadable/stockwise-be/services"
-	"github.com/jihadable/stockwise-be/utils"
 	"github.com/jihadable/stockwise-be/validator"
-
-	"github.com/gofiber/fiber/v2"
 )
 
 type ProductHandler interface {
@@ -25,45 +25,50 @@ type ProductHandlerImpl struct {
 func (handler *ProductHandlerImpl) PostProduct(ctx *fiber.Ctx) error {
 	image := ctx.Locals("image").(request.ImageRequest)
 
-	productRequest := request.ProductRequest{}
+	requestBody := request.ProductRequest{}
 
-	err := ctx.BodyParser(&productRequest)
+	err := ctx.BodyParser(&requestBody)
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Gagal menambahkan produk")
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
 	}
-	productRequest.UserId = ctx.Locals("user_id").(string)
+	requestBody.UserId = ctx.Locals("user_id").(string)
 
-	err = handler.Validator.ValidatePostProductRequest(productRequest)
+	err = handler.Validator.ValidatePostProductRequest(requestBody)
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	product := *utils.RequestToProduct(&productRequest)
-
-	productResponse, err := handler.Service.AddProduct(image, product)
+	product, err := handler.Service.AddProduct(image, &entity.Product{
+		Name:        requestBody.Name,
+		Category:    requestBody.Category,
+		Price:       requestBody.Price,
+		Quantity:    requestBody.Quantity,
+		Description: requestBody.Description,
+		UserId:      requestBody.UserId,
+	})
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusBadRequest, "Fail to create product")
 	}
 
 	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"status": "success",
 		"data": fiber.Map{
-			"product": productResponse,
+			"product": mapper.ProductToResponse(product),
 		},
 	})
 }
 
 func (handler *ProductHandlerImpl) GetProductsByUser(ctx *fiber.Ctx) error {
 	userId := ctx.Locals("user_id").(string)
-	productsResponse, err := handler.Service.GetProductsByUser(userId)
+	products, err := handler.Service.GetProductsByUser(userId)
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusNotFound, "Products not found")
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status": "success",
 		"data": fiber.Map{
-			"products": productsResponse,
+			"products": mapper.ProductsToResponses(products),
 		},
 	})
 }
@@ -71,15 +76,15 @@ func (handler *ProductHandlerImpl) GetProductsByUser(ctx *fiber.Ctx) error {
 func (handler *ProductHandlerImpl) GetProductById(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
-	productResponse, err := handler.Service.GetProductById(id)
+	product, err := handler.Service.GetProductById(id)
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusNotFound, "Product not found")
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status": "success",
 		"data": fiber.Map{
-			"product": productResponse,
+			"product": mapper.ProductToResponse(product),
 		},
 	})
 }
@@ -87,29 +92,33 @@ func (handler *ProductHandlerImpl) GetProductById(ctx *fiber.Ctx) error {
 func (handler *ProductHandlerImpl) PutProductById(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	image := ctx.Locals("image").(request.ImageRequest)
-	productRequest := request.ProductRequest{}
+	requestBody := request.ProductRequest{}
 
-	err := ctx.BodyParser(&productRequest)
+	err := ctx.BodyParser(&requestBody)
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Gagal memperbarui produk")
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	err = handler.Validator.ValidatePutProductRequest(productRequest)
+	err = handler.Validator.ValidatePutProductRequest(requestBody)
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	product := *utils.RequestToProduct(&productRequest)
-
-	productResponse, err := handler.Service.UpdateProductById(id, image, product)
+	product, err := handler.Service.UpdateProductById(id, image, &entity.Product{
+		Name:        requestBody.Name,
+		Category:    requestBody.Category,
+		Price:       requestBody.Price,
+		Quantity:    requestBody.Quantity,
+		Description: requestBody.Description,
+	})
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusBadRequest, "Fail to update product")
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status": "success",
 		"data": fiber.Map{
-			"product": productResponse,
+			"product": mapper.ProductToResponse(product),
 		},
 	})
 }
@@ -119,7 +128,7 @@ func (handler *ProductHandlerImpl) DeleteProductById(ctx *fiber.Ctx) error {
 
 	err := handler.Service.DeleteProductById(id)
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusBadRequest, "Fail to delete product")
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{

@@ -2,10 +2,8 @@ package validator
 
 import (
 	"github.com/jihadable/stockwise-be/model/request"
-	"github.com/jihadable/stockwise-be/utils"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/gofiber/fiber/v2"
 )
 
 type UserValidator interface {
@@ -21,7 +19,7 @@ type UserValidatorImpl struct {
 func (validator *UserValidatorImpl) ValidatePostUserRequest(request *request.UserRequest) error {
 	err := validator.Validate.Struct(request)
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, utils.ParseValidationErrors(err))
+		return err
 	}
 	return nil
 }
@@ -29,7 +27,7 @@ func (validator *UserValidatorImpl) ValidatePostUserRequest(request *request.Use
 func (validator *UserValidatorImpl) ValidatePutUserRequest(request *request.UpdateUserRequest) error {
 	err := validator.Validate.Struct(request)
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, utils.ParseValidationErrors(err))
+		return err
 	}
 	return nil
 }
@@ -37,7 +35,7 @@ func (validator *UserValidatorImpl) ValidatePutUserRequest(request *request.Upda
 func (validator *UserValidatorImpl) ValidateVerifyUserRequest(request *request.LoginRequest) error {
 	err := validator.Validate.Struct(request)
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, utils.ParseValidationErrors(err))
+		return err
 	}
 	return nil
 }

@@ -1,12 +1,13 @@
 package handlers
 
 import (
+	"github.com/gofiber/fiber/v2"
+	"github.com/jihadable/stockwise-be/helper"
+	"github.com/jihadable/stockwise-be/helper/mapper"
+	"github.com/jihadable/stockwise-be/model/entity"
 	"github.com/jihadable/stockwise-be/model/request"
 	"github.com/jihadable/stockwise-be/services"
-	"github.com/jihadable/stockwise-be/utils"
 	"github.com/jihadable/stockwise-be/validator"
-
-	"github.com/gofiber/fiber/v2"
 )
 
 type UserHandler interface {
@@ -22,34 +23,37 @@ type UserHandlerImpl struct {
 }
 
 func (handler *UserHandlerImpl) PostUser(ctx *fiber.Ctx) error {
-	userRequest := request.UserRequest{}
+	requestBody := request.UserRequest{}
 
-	err := ctx.BodyParser(&userRequest)
+	err := ctx.BodyParser(&requestBody)
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Gagal register")
+		return fiber.NewError(fiber.StatusBadRequest, "Registration failed")
 	}
 
-	err = handler.Validator.ValidatePostUserRequest(&userRequest)
+	err = handler.Validator.ValidatePostUserRequest(&requestBody)
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusInternalServerError, "Fail to hash password")
 	}
 
-	user := *utils.RequestToUser(&userRequest)
-
-	userResponse, err := handler.Service.AddUser(user)
+	user, err := handler.Service.AddUser(&entity.User{
+		Username: requestBody.Username,
+		Email:    requestBody.Email,
+		Password: requestBody.Password,
+		Bio:      requestBody.Bio,
+	})
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusBadRequest, "Registration failed")
 	}
 
-	token, err := utils.GenerateJWT(userResponse.Id)
+	token, err := helper.GenerateJWT(user.Id)
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusInternalServerError, "Fail to generate JWT")
 	}
 
 	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"status": "success",
 		"data": fiber.Map{
-			"user":  userResponse,
+			"user":  mapper.UserToResponse(user),
 			"token": token,
 		},
 	})
@@ -58,75 +62,76 @@ func (handler *UserHandlerImpl) PostUser(ctx *fiber.Ctx) error {
 func (handler *UserHandlerImpl) GetUserById(ctx *fiber.Ctx) error {
 	userId := ctx.Locals("user_id").(string)
 
-	userResponse, err := handler.Service.GetUserById(userId)
+	user, err := handler.Service.GetUserById(userId)
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusUnauthorized, "User not found")
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status": "success",
 		"data": fiber.Map{
-			"user": userResponse,
+			"user": mapper.UserToResponse(user),
 		},
 	})
 }
 
 func (handler *UserHandlerImpl) PutUserById(ctx *fiber.Ctx) error {
 	userId := ctx.Locals("user_id").(string)
-	userRequest := request.UpdateUserRequest{}
+	requestBody := request.UpdateUserRequest{}
 
-	err := ctx.BodyParser(&userRequest)
+	err := ctx.BodyParser(&requestBody)
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Gagal memperbarui pengguna")
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid resquest body")
 	}
 
-	err = handler.Validator.ValidatePutUserRequest(&userRequest)
+	err = handler.Validator.ValidatePutUserRequest(&requestBody)
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid resquest body")
 	}
 
-	user := *utils.UpdateUserRequestToUser(&userRequest)
-
-	userResponse, err := handler.Service.UpdateUserById(userId, user)
+	user, err := handler.Service.UpdateUserById(userId, &entity.User{
+		Username: requestBody.Username,
+		Bio:      requestBody.Bio,
+	})
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusBadRequest, "Fail to update user")
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status": "success",
 		"data": fiber.Map{
-			"user": userResponse,
+			"user": mapper.UserToResponse(user),
 		},
 	})
 }
 
 func (handler *UserHandlerImpl) VerifyUser(ctx *fiber.Ctx) error {
-	loginRequest := request.LoginRequest{}
+	requestBody := request.LoginRequest{}
 
-	err := ctx.BodyParser(&loginRequest)
+	err := ctx.BodyParser(&requestBody)
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Gagal masuk")
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	err = handler.Validator.ValidateVerifyUserRequest(&loginRequest)
+	err = handler.Validator.ValidateVerifyUserRequest(&requestBody)
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	userResponse, err := handler.Service.VerifyUser(loginRequest.Email, loginRequest.Password)
+	user, err := handler.Service.VerifyUser(requestBody.Email, requestBody.Password)
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusUnauthorized, "Login failed")
 	}
 
-	token, err := utils.GenerateJWT(userResponse.Id)
+	token, err := helper.GenerateJWT(user.Id)
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusInternalServerError, "Fail to generate JWT")
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status": "success",
 		"data": fiber.Map{
-			"user":  userResponse,
+			"user":  mapper.UserToResponse(user),
 			"token": token,
 		},
 	})

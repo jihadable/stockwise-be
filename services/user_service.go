@@ -2,22 +2,18 @@ package services
 
 import (
 	"github.com/jihadable/stockwise-be/config"
+	"github.com/jihadable/stockwise-be/helper"
 	"github.com/jihadable/stockwise-be/model/entity"
-	"github.com/jihadable/stockwise-be/model/response"
-	"github.com/jihadable/stockwise-be/utils"
 	"github.com/redis/go-redis/v9"
-
-	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
 type UserService interface {
-	AddUser(user entity.User) (response.UserResponse, error)
-	GetUserById(id string) (response.UserResponse, error)
-	UpdateUserById(id string, user entity.User) (response.UserResponse, error)
-	VerifyUser(email, password string) (response.UserResponse, error)
+	AddUser(user *entity.User) (*entity.User, error)
+	GetUserById(id string) (*entity.User, error)
+	UpdateUserById(id string, user *entity.User) (*entity.User, error)
+	VerifyUser(email, password string) (*entity.User, error)
 }
 
 type UserServiceImpl struct {
@@ -25,75 +21,67 @@ type UserServiceImpl struct {
 	Redis *redis.Client
 }
 
-func (service *UserServiceImpl) AddUser(user entity.User) (response.UserResponse, error) {
-	user.Id = uuid.NewString()
-	hashedPassword, err := utils.HashPassword(user.Password)
+func (service *UserServiceImpl) AddUser(user *entity.User) (*entity.User, error) {
+	hashedPassword, err := helper.HashPassword(user.Password)
 	if err != nil {
-		return response.UserResponse{}, err
+		return nil, err
 	}
 	user.Password = hashedPassword
-	result := service.DB.Create(&user)
 
-	err = result.Error
+	err = service.DB.Create(&user).Error
 	if err != nil {
-		return response.UserResponse{}, fiber.NewError(fiber.StatusBadRequest, "Gagal menambahkan pengguna")
+		return nil, err
 	}
 
-	return *utils.UserToResponse(&user), nil
+	return user, nil
 }
 
-func (service *UserServiceImpl) GetUserById(id string) (response.UserResponse, error) {
-	user := entity.User{}
+func (service *UserServiceImpl) GetUserById(id string) (*entity.User, error) {
+	user := &entity.User{}
 
 	result := service.DB.Where("id = ?", id).First(&user)
 
 	err := result.Error
 	if err != nil {
-		return response.UserResponse{}, fiber.NewError(fiber.StatusNotFound, "Gagal mendapatkan pengguna")
+		return nil, err
 	}
 
-	return *utils.UserToResponse(&user), nil
+	return user, nil
 }
 
-func (service *UserServiceImpl) UpdateUserById(id string, user entity.User) (response.UserResponse, error) {
-	savedUser := entity.User{}
+func (service *UserServiceImpl) UpdateUserById(id string, user *entity.User) (*entity.User, error) {
+	savedUser := &entity.User{}
 
-	result := service.DB.Where("id = ?", id).First(&savedUser)
-
-	err := result.Error
+	err := service.DB.Where("id = ?", id).First(&savedUser).Error
 	if err != nil {
-		return response.UserResponse{}, fiber.NewError(fiber.StatusNotFound, "Pengguna tidak ditemukan")
+		return nil, err
 	}
 
 	savedUser.Username = user.Username
 	savedUser.Bio = user.Bio
 
-	result = service.DB.Where("id = ?", id).Updates(&savedUser)
-
-	err = result.Error
+	err = service.DB.Where("id = ?", id).Updates(&savedUser).Error
 	if err != nil {
-		return response.UserResponse{}, fiber.NewError(fiber.StatusNotFound, "Gagal memperbarui pengguna")
+		return nil, err
 	}
 
-	return *utils.UserToResponse(&savedUser), nil
+	return savedUser, nil
 }
 
-func (service *UserServiceImpl) VerifyUser(email, password string) (response.UserResponse, error) {
-	user := entity.User{}
+func (service *UserServiceImpl) VerifyUser(email, password string) (*entity.User, error) {
+	user := &entity.User{}
 
-	result := service.DB.Where("email = ?", email).First(&user)
-
-	err := result.Error
+	err := service.DB.Where("email = ?", email).First(&user).Error
 	if err != nil {
-		return response.UserResponse{}, fiber.NewError(fiber.StatusNotFound, "Pengguna tidak ditemukan")
+		return nil, err
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return response.UserResponse{}, fiber.NewError(fiber.StatusUnauthorized, "Password salah")
+		return nil, err
 	}
 
-	return *utils.UserToResponse(&user), nil
+	return user, nil
 }
 
 func NewUserService(config *config.Config) UserService {

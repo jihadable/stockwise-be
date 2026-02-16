@@ -31,12 +31,8 @@ func (service *StorageServiceImpl) AddImage(image request.ImageRequest) (string,
 	request.BodyStream(image.File, -1)
 
 	status, _, err := request.String()
-	if err != nil {
-		return "", fiber.NewError(fiber.StatusBadRequest, "Gagal mengunggah gambar")
-	}
-
-	if status != fiber.StatusOK {
-		return "", fiber.NewError(fiber.StatusBadRequest, "Gagal mengunggah gambar")
+	if err != nil || status != fiber.StatusOK {
+		return "", err[0]
 	}
 
 	return imageName, nil
@@ -49,12 +45,8 @@ func (service *StorageServiceImpl) DeleteImage(imageName string) error {
 	request.Set("Authorization", "Bearer "+service.APIKey)
 
 	status, _, err := request.String()
-	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Gagal menghapus gambar")
-	}
-
-	if status != fiber.StatusOK {
-		return fiber.NewError(fiber.StatusBadRequest, "Gagal bro")
+	if err != nil || status != fiber.StatusOK {
+		return err[0]
 	}
 
 	return nil

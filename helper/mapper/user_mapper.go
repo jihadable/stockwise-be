@@ -1,4 +1,4 @@
-package utils
+package mapper
 
 import (
 	"github.com/jihadable/stockwise-be/model/entity"

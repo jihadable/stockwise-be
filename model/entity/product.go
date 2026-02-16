@@ -1,6 +1,11 @@
 package entity
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
 
 type Product struct {
 	Id          string    `gorm:"column:id;primaryKey" json:"id"`
@@ -15,4 +20,11 @@ type Product struct {
 	UpdatedAt   time.Time `gorm:"column:updated_at" json:"updated_at"`
 
 	User *User `gorm:"foreignKey:UserId;references:Id" json:"user"`
+}
+
+func (model *Product) BeforeCreate(tx *gorm.DB) error {
+	if model.Id == "" {
+		model.Id = uuid.NewString()
+	}
+	return nil
 }
