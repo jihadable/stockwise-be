@@ -119,6 +119,7 @@ func (service *ProductServiceImpl) UpdateProductById(id string, image request.Im
 	savedProduct.Name = product.Name
 	savedProduct.Price = product.Price
 	savedProduct.Quantity = product.Quantity
+	savedProduct.Category = product.Category
 	savedProduct.Description = product.Description
 
 	err = service.DB.Where("id = ?", id).Updates(&savedProduct).Error

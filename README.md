@@ -10,5 +10,7 @@ Stockwise is a web-based inventory management system. This website displays the 
 » GoFiber
 <br/>
 » PostgreSQL
+<br/>
+» Redis
 
 <img src="https://umarjihad.netlify.app/pic/stockwise.png" />

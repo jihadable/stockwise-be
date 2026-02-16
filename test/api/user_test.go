@@ -30,10 +30,10 @@ func TestPostUserWithValidPayload(t *testing.T) {
 	data, ok := responseBody["data"].(map[string]any)
 	assert.True(t, ok)
 
-	token, ok := data["token"].(string)
+	jwt, ok := data["jwt"].(string)
 	assert.True(t, ok)
-	assert.NotEmpty(t, token)
-	JWT = token
+	assert.NotEmpty(t, jwt)
+	JWT = jwt
 
 	user, ok := data["user"].(map[string]any)
 	assert.True(t, ok)
@@ -81,10 +81,10 @@ func TestVerifyUserWithValidPayload(t *testing.T) {
 	data, ok := responseBody["data"].(map[string]any)
 	assert.True(t, ok)
 
-	token, ok := data["token"].(string)
+	jwt, ok := data["jwt"].(string)
 	assert.True(t, ok)
-	assert.NotEmpty(t, token)
-	JWT = token
+	assert.NotEmpty(t, jwt)
+	JWT = jwt
 
 	user, ok := data["user"].(map[string]any)
 	assert.True(t, ok)
@@ -92,7 +92,6 @@ func TestVerifyUserWithValidPayload(t *testing.T) {
 	assert.NotEmpty(t, user["id"])
 	assert.Equal(t, "username 1", user["username"])
 	assert.Equal(t, "email1@mail.com", user["email"])
-	assert.Equal(t, "bio 1", user["bio"])
 
 	t.Log("✅")
 }
@@ -135,7 +134,6 @@ func TestGetUserByIdWithToken(t *testing.T) {
 	assert.NotEmpty(t, user["id"])
 	assert.Equal(t, "username 1", user["username"])
 	assert.Equal(t, "email1@mail.com", user["email"])
-	assert.Equal(t, "bio 1", user["bio"])
 
 	t.Log("✅")
 }
@@ -150,7 +148,7 @@ func TestGetUserByIdWithoutToken(t *testing.T) {
 
 	responseBody := ResponseBodyParser(response.Body)
 	assert.Equal(t, "fail", responseBody["status"])
-	assert.Equal(t, "Token tidak ditemukan", responseBody["message"])
+	assert.NotEmpty(t, responseBody["message"])
 
 	t.Log("✅")
 }

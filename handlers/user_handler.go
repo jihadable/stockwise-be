@@ -32,7 +32,7 @@ func (handler *UserHandlerImpl) PostUser(ctx *fiber.Ctx) error {
 
 	err = handler.Validator.ValidatePostUserRequest(&requestBody)
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Fail to hash password")
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
 	}
 
 	user, err := handler.Service.AddUser(&entity.User{
@@ -45,7 +45,7 @@ func (handler *UserHandlerImpl) PostUser(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Registration failed")
 	}
 
-	token, err := helper.GenerateJWT(user.Id)
+	jwt, err := helper.GenerateJWT(user.Id)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "Fail to generate JWT")
 	}
@@ -53,8 +53,8 @@ func (handler *UserHandlerImpl) PostUser(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"status": "success",
 		"data": fiber.Map{
-			"user":  mapper.UserToResponse(user),
-			"token": token,
+			"user": mapper.UserToResponse(user),
+			"jwt":  jwt,
 		},
 	})
 }
@@ -123,7 +123,7 @@ func (handler *UserHandlerImpl) VerifyUser(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "Login failed")
 	}
 
-	token, err := helper.GenerateJWT(user.Id)
+	jwt, err := helper.GenerateJWT(user.Id)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "Fail to generate JWT")
 	}
@@ -131,8 +131,8 @@ func (handler *UserHandlerImpl) VerifyUser(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status": "success",
 		"data": fiber.Map{
-			"user":  mapper.UserToResponse(user),
-			"token": token,
+			"user": mapper.UserToResponse(user),
+			"jwt":  jwt,
 		},
 	})
 }
