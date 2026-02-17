@@ -15,16 +15,16 @@ type ProductValidatorImpl struct {
 	Validate *validator.Validate
 }
 
-func (validator *ProductValidatorImpl) ValidatePostProductRequest(productRequest request.ProductRequest) error {
-	err := validator.Validate.Struct(productRequest)
+func (validator *ProductValidatorImpl) ValidatePostProductRequest(request request.ProductRequest) error {
+	err := validator.Validate.Struct(request)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (validator *ProductValidatorImpl) ValidatePutProductRequest(productRequest request.ProductRequest) error {
-	err := validator.Validate.Struct(productRequest)
+func (validator *ProductValidatorImpl) ValidatePutProductRequest(request request.ProductRequest) error {
+	err := validator.Validate.Struct(request)
 	if err != nil {
 		return err
 	}

@@ -42,6 +42,7 @@ func handler() http.HandlerFunc {
 	}
 	routes.RegisterUserRoutes(api, config)
 	routes.RegisterProductRoutes(api, config)
+	routes.RegisterEmailVerificationRoutes(api, config)
 
 	return adaptor.FiberApp(app)
 }

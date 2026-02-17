@@ -27,13 +27,14 @@ func main() {
 		Redis: config.Redis(),
 	}
 
-	err = config.DB.AutoMigrate(&entity.User{}, &entity.Product{})
+	err = config.DB.AutoMigrate(&entity.User{}, &entity.Product{}, &entity.EmailVerification{})
 	if err != nil {
 		panic(err)
 	}
 
 	routes.RegisterUserRoutes(api, config)
 	routes.RegisterProductRoutes(api, config)
+	routes.RegisterEmailVerificationRoutes(api, config)
 
 	err = app.Listen(":3000")
 	if err != nil {

@@ -10,6 +10,7 @@ import (
 	_ "github.com/stretchr/testify"
 	_ "github.com/stretchr/testify/assert"
 	_ "golang.org/x/crypto/bcrypt"
+	_ "gopkg.in/gomail.v2"
 	_ "gorm.io/driver/postgres"
 	_ "gorm.io/gorm"
 )
