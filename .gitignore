@@ -1,6 +1,5 @@
 .env.local
 .env
-.env.example
 go.sum
 .DS_Store
 static

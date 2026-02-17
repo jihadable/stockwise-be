@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/jihadable/stockwise-be/model/request"
 	"github.com/jihadable/stockwise-be/services"
 )
 
@@ -15,6 +16,12 @@ type EmailVerificationHandlerImpl struct {
 }
 
 func (handler *EmailVerificationHandlerImpl) SendEmailVerification(ctx *fiber.Ctx) error {
+	requestBody := request.SendEmailVerificationRequest{}
+
+	err := ctx.BodyParser(&requestBody)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "")
+	}
 	panic("")
 }
 

@@ -1,6 +1,9 @@
 package services
 
 import (
+	"errors"
+	"fmt"
+	"os"
 	"time"
 
 	"github.com/jihadable/stockwise-be/config"
@@ -21,7 +24,7 @@ type EmailVerificationServiceImpl struct {
 }
 
 func (service *EmailVerificationServiceImpl) SendEmailVerification(userId string) error {
-	var emailTarget string
+	var emailTarget, token string
 	err := service.DB.Transaction(func(tx *gorm.DB) error {
 		user := entity.User{}
 
@@ -56,13 +59,36 @@ func (service *EmailVerificationServiceImpl) SendEmailVerification(userId string
 		return err
 	}
 
-	emailVerificationLink := ""
+	emailVerificationLink := fmt.Sprintf("%s/verify-email/%s", os.Getenv("WEB_ENDPOINT"), token)
 
 	return helper.SendEmailVerification(emailTarget, emailVerificationLink)
 }
 
 func (service *EmailVerificationServiceImpl) VerifyEmail(token string) error {
-	panic("")
+	return service.DB.Transaction(func(tx *gorm.DB) error {
+		emailVerification := entity.EmailVerification{}
+
+		err := tx.Where("token = ? AND expire_at > ?", token, time.Now()).First(&emailVerification).Error
+		if err != nil {
+			return err
+		}
+
+		result := tx.Model(&entity.User{}).Where("id = ? AND is_email_verified = ?", emailVerification.UserId, false).Update("is_email_verified", true)
+		if result.Error != nil {
+			return result.Error
+		}
+
+		if result.RowsAffected == 0 {
+			return errors.New("User already verified")
+		}
+
+		err = tx.Delete(&emailVerification).Error
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 }
 
 func NewEmailVerificationService(config *config.Config) EmailVerificationService {
