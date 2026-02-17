@@ -120,7 +120,7 @@ func (handler *UserHandlerImpl) VerifyUser(ctx *fiber.Ctx) error {
 
 	user, err := handler.Service.VerifyUser(requestBody.Email, requestBody.Password)
 	if err != nil {
-		return fiber.NewError(fiber.StatusUnauthorized, "Login failed")
+		return fiber.NewError(fiber.StatusBadRequest, "Incorrect email or password")
 	}
 
 	jwt, err := helper.GenerateJWT(user.Id)

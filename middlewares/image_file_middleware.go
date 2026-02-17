@@ -18,7 +18,7 @@ func GetImageFile() fiber.Handler {
 
 		imageFile, err := imageHeader.Open()
 		if err != nil {
-			return fiber.NewError(fiber.StatusBadRequest, "Gagal menambahkan produk")
+			return fiber.NewError(fiber.StatusBadRequest, "Fail to load file")
 		}
 		defer imageFile.Close()
 

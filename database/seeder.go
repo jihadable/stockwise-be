@@ -57,7 +57,7 @@ func seeder(db *gorm.DB) error {
 }
 
 func main() {
-	err := godotenv.Load(".env.local")
+	err := godotenv.Load(".env")
 	if err != nil {
 		panic(err)
 	}
