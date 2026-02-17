@@ -1,13 +1,25 @@
 package helper
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func GenerateJWT(userId string) (string, error) {
+func GetToken() (string, error) {
+	bytes := make([]byte, 32)
+
+	if _, err := rand.Read(bytes); err != nil {
+		return "", err
+	}
+
+	return hex.EncodeToString(bytes), nil
+}
+
+func GetJWT(userId string) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id": userId,
 		"exp":     time.Now().Add(time.Hour * 24 * 30).Unix(),

@@ -45,7 +45,7 @@ func (handler *UserHandlerImpl) PostUser(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Registration failed")
 	}
 
-	jwt, err := helper.GenerateJWT(user.Id)
+	jwt, err := helper.GetJWT(user.Id)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "Fail to generate JWT")
 	}
@@ -123,7 +123,7 @@ func (handler *UserHandlerImpl) VerifyUser(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Incorrect email or password")
 	}
 
-	jwt, err := helper.GenerateJWT(user.Id)
+	jwt, err := helper.GetJWT(user.Id)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "Fail to generate JWT")
 	}

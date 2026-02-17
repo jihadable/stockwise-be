@@ -23,9 +23,9 @@ func DB() *gorm.DB {
 	)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent),
-		// SkipDefaultTransaction: true,
-		PrepareStmt: true,
+		Logger:                 logger.Default.LogMode(logger.Silent),
+		SkipDefaultTransaction: true,
+		PrepareStmt:            true,
 	})
 	if err != nil {
 		panic("Failed to connect to database: " + err.Error())
