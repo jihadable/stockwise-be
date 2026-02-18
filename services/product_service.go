@@ -37,7 +37,7 @@ func (service *ProductServiceImpl) AddProduct(image request.ImageRequest, produc
 		product.Image = &imagePath
 	}
 
-	err := service.DB.Create(&product).Error
+	err := service.DB.Create(product).Error
 	if err != nil {
 		return nil, err
 	}
@@ -66,14 +66,14 @@ func (service *ProductServiceImpl) GetProductsByUser(userId string) ([]*entity.P
 func (service *ProductServiceImpl) GetProductById(id string) (*entity.Product, error) {
 	ctx := context.Background()
 	redisKey := "product:" + id
-	product := &entity.Product{}
+	product := entity.Product{}
 
 	productInRedis, err := service.Redis.Get(ctx, redisKey).Result()
 	if err != nil && productInRedis != "" {
 		err = json.Unmarshal([]byte(productInRedis), &product)
 
 		if err != nil {
-			return product, nil
+			return &product, nil
 		}
 	}
 
@@ -88,11 +88,11 @@ func (service *ProductServiceImpl) GetProductById(id string) (*entity.Product, e
 	}
 	service.Redis.Set(ctx, redisKey, productJSON, time.Hour)
 
-	return product, nil
+	return &product, nil
 }
 
 func (service *ProductServiceImpl) UpdateProductById(id string, image request.ImageRequest, product *entity.Product) (*entity.Product, error) {
-	savedProduct := &entity.Product{}
+	savedProduct := entity.Product{}
 
 	result := service.DB.Where("id = ?", id).First(&savedProduct)
 
@@ -129,7 +129,7 @@ func (service *ProductServiceImpl) UpdateProductById(id string, image request.Im
 
 	service.Redis.Del(context.Background(), "product:"+id)
 
-	return savedProduct, nil
+	return &savedProduct, nil
 }
 
 func (service *ProductServiceImpl) DeleteProductById(id string) error {
@@ -147,7 +147,7 @@ func (service *ProductServiceImpl) DeleteProductById(id string) error {
 		}
 	}
 
-	err = service.DB.Where("id = ?", id).Delete(&entity.Product{}).Error
+	err = service.DB.Delete(&savedProduct).Error
 	if err != nil {
 		return err
 	}

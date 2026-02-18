@@ -27,7 +27,7 @@ func (handler *UserHandlerImpl) PostUser(ctx *fiber.Ctx) error {
 
 	err := ctx.BodyParser(&requestBody)
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Registration failed")
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
 	}
 
 	err = handler.Validator.ValidatePostUserRequest(&requestBody)

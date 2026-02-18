@@ -28,7 +28,7 @@ func (service *UserServiceImpl) AddUser(user *entity.User) (*entity.User, error)
 	}
 	user.Password = hashedPassword
 
-	err = service.DB.Create(&user).Error
+	err = service.DB.Create(user).Error
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (service *UserServiceImpl) AddUser(user *entity.User) (*entity.User, error)
 }
 
 func (service *UserServiceImpl) GetUserById(id string) (*entity.User, error) {
-	user := &entity.User{}
+	user := entity.User{}
 
 	result := service.DB.Where("id = ?", id).First(&user)
 
@@ -46,11 +46,11 @@ func (service *UserServiceImpl) GetUserById(id string) (*entity.User, error) {
 		return nil, err
 	}
 
-	return user, nil
+	return &user, nil
 }
 
 func (service *UserServiceImpl) UpdateUserById(id string, user *entity.User) (*entity.User, error) {
-	savedUser := &entity.User{}
+	savedUser := entity.User{}
 
 	err := service.DB.Where("id = ?", id).First(&savedUser).Error
 	if err != nil {
@@ -60,16 +60,16 @@ func (service *UserServiceImpl) UpdateUserById(id string, user *entity.User) (*e
 	savedUser.Username = user.Username
 	savedUser.Bio = user.Bio
 
-	err = service.DB.Where("id = ?", id).Updates(&savedUser).Error
+	err = service.DB.Where("id = ?", id).Updates(savedUser).Error
 	if err != nil {
 		return nil, err
 	}
 
-	return savedUser, nil
+	return &savedUser, nil
 }
 
 func (service *UserServiceImpl) VerifyUser(email, password string) (*entity.User, error) {
-	user := &entity.User{}
+	user := entity.User{}
 
 	err := service.DB.Where("email = ?", email).First(&user).Error
 	if err != nil {
@@ -81,7 +81,7 @@ func (service *UserServiceImpl) VerifyUser(email, password string) (*entity.User
 		return nil, err
 	}
 
-	return user, nil
+	return &user, nil
 }
 
 func NewUserService(config *config.Config) UserService {
