@@ -6,14 +6,14 @@ import (
 )
 
 type EmailVerificationValidator interface {
-	ValidateVerifyEmailRequest(request *request.VerifyEmailRequest) error
+	ValidateVerifyEmailRequest(request request.VerifyEmailRequest) error
 }
 
 type EmailVerificationValidatorImpl struct {
 	Validate *validator.Validate
 }
 
-func (validator *EmailVerificationValidatorImpl) ValidateVerifyEmailRequest(request *request.VerifyEmailRequest) error {
+func (validator *EmailVerificationValidatorImpl) ValidateVerifyEmailRequest(request request.VerifyEmailRequest) error {
 	err := validator.Validate.Struct(request)
 	if err != nil {
 		return err

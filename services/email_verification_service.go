@@ -8,6 +8,7 @@ import (
 
 	"github.com/jihadable/stockwise-be/config"
 	"github.com/jihadable/stockwise-be/helper"
+	"github.com/jihadable/stockwise-be/helper/mailer"
 	"github.com/jihadable/stockwise-be/model/entity"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -35,7 +36,7 @@ func (service *EmailVerificationServiceImpl) SendEmailVerification(userId string
 
 		emailTarget = user.Email
 
-		token, err := helper.GetToken()
+		token, err = helper.GetToken()
 		if err != nil {
 			return err
 		}
@@ -61,7 +62,7 @@ func (service *EmailVerificationServiceImpl) SendEmailVerification(userId string
 
 	emailVerificationLink := fmt.Sprintf("%s/verify-email/%s", os.Getenv("WEB_ENDPOINT"), token)
 
-	return helper.SendEmailVerification(emailTarget, emailVerificationLink)
+	return mailer.SendEmailVerification(emailTarget, emailVerificationLink)
 }
 
 func (service *EmailVerificationServiceImpl) VerifyEmail(token string) error {

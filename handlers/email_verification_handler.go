@@ -25,7 +25,9 @@ func (handler *EmailVerificationHandlerImpl) SendEmailVerification(ctx *fiber.Ct
 		return fiber.NewError(fiber.StatusBadRequest, "Fail to send email verification")
 	}
 
-	return nil
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status": "success",
+	})
 }
 
 func (handler *EmailVerificationHandlerImpl) VerifyEmail(ctx *fiber.Ctx) error {
@@ -36,7 +38,7 @@ func (handler *EmailVerificationHandlerImpl) VerifyEmail(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	err = handler.Validator.ValidateVerifyEmailRequest(&requestBody)
+	err = handler.Validator.ValidateVerifyEmailRequest(requestBody)
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
 	}
@@ -46,9 +48,11 @@ func (handler *EmailVerificationHandlerImpl) VerifyEmail(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Fail to verify email")
 	}
 
-	return nil
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status": "success",
+	})
 }
 
-func NewEmailVerificationHandler(service services.EmailVerificationService) EmailVerificationHandler {
-	return &EmailVerificationHandlerImpl{Service: service}
+func NewEmailVerificationHandler(service services.EmailVerificationService, validator validator.EmailVerificationValidator) EmailVerificationHandler {
+	return &EmailVerificationHandlerImpl{Service: service, Validator: validator}
 }

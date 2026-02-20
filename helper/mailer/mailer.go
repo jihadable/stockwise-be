@@ -1,15 +1,21 @@
-package helper
+package mailer
 
 import (
 	"bytes"
+	"embed"
 	"html/template"
 	"os"
+
+	_ "embed"
 
 	"gopkg.in/gomail.v2"
 )
 
-func ParseTemplate(templatePath string, data any) (string, error) {
-	tmpl, err := template.ParseFiles(templatePath)
+//go:embed templates/emailVerification.html
+var emailTemplateFS embed.FS
+
+func ParseTemplate(filePath string, data any) (string, error) {
+	tmpl, err := template.ParseFS(emailTemplateFS, filePath)
 	if err != nil {
 		return "", err
 	}
@@ -26,7 +32,7 @@ func SendEmailVerification(target, emailVerificationLink string) error {
 	message := gomail.NewMessage()
 
 	body, err := ParseTemplate(
-		"view/emailVerification.html",
+		"templates/emailVerification.html",
 		map[string]any{
 			"emailVerificationLink": emailVerificationLink,
 		},

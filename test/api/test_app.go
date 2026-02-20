@@ -17,6 +17,10 @@ func TestApp() *fiber.App {
 
 	app := fiber.New()
 
+	app.Get("/assets/logo.png", func(ctx *fiber.Ctx) error {
+		return ctx.SendFile("assets/logo.png")
+	})
+
 	api := app.Group("/api", middlewares.ErrorHandler())
 	config := &config.Config{
 		DB:    config.DB(),
@@ -24,6 +28,7 @@ func TestApp() *fiber.App {
 	}
 	routes.RegisterUserRoutes(api, config)
 	routes.RegisterProductRoutes(api, config)
+	routes.RegisterEmailVerificationRoutes(api, config)
 
 	return app
 }

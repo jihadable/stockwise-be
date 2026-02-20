@@ -57,7 +57,7 @@ func TestPostProductWithoutImage(t *testing.T) {
 }
 
 func TestPostProductWithImage(t *testing.T) {
-	filePath := filepath.Join("..", "..", "static", "ss.png")
+	filePath := filepath.Join("..", "..", "assets", "logo.png")
 	file, err := os.Open(filePath)
 	assert.Nil(t, err)
 	defer file.Close()
@@ -108,8 +108,7 @@ func TestPostProductWithImage(t *testing.T) {
 }
 
 func TestPostProductWithInvalidPayload(t *testing.T) {
-	requestBody := RequestBodyParser(request.ProductRequest{})
-	request := httptest.NewRequest(fiber.MethodPost, "/api/products", requestBody)
+	request := httptest.NewRequest(fiber.MethodPost, "/api/products", nil)
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Authorization", "Bearer "+JWT)
 
@@ -244,7 +243,7 @@ func TestUpdateProductByIdWithoutImage(t *testing.T) {
 }
 
 func TestUpdateProductByIdWithImage(t *testing.T) {
-	filePath := filepath.Join("..", "..", "static", "ss.png")
+	filePath := filepath.Join("..", "..", "assets", "logo.png")
 	file, err := os.Open(filePath)
 	assert.Nil(t, err)
 	defer file.Close()
@@ -294,8 +293,7 @@ func TestUpdateProductByIdWithImage(t *testing.T) {
 }
 
 func TestUpdateProductByIdWithInvalidPayload(t *testing.T) {
-	requestBody := RequestBodyParser(request.ProductRequest{})
-	request := httptest.NewRequest(fiber.MethodPut, "/api/products/"+productIdWithoutImage, requestBody)
+	request := httptest.NewRequest(fiber.MethodPut, "/api/products/"+productIdWithoutImage, nil)
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Authorization", "Bearer "+JWT)
 

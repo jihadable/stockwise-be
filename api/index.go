@@ -35,6 +35,10 @@ func handler() http.HandlerFunc {
 
 	app.Use(cors.New(cors.ConfigDefault))
 
+	app.Get("/assets/logo.png", func(ctx *fiber.Ctx) error {
+		return ctx.SendFile("assets/logo.png")
+	})
+
 	api := app.Group("/api", middlewares.ErrorHandler())
 	config := &config.Config{
 		DB:    config.DB(),

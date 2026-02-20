@@ -41,13 +41,14 @@ func TestPostUserWithValidPayload(t *testing.T) {
 	assert.NotEmpty(t, user["id"])
 	assert.Equal(t, "username 1", user["username"])
 	assert.Equal(t, "email1@mail.com", user["email"])
+	assert.Nil(t, user["bio"])
+	assert.Equal(t, false, user["is_email_verified"])
 
 	t.Log("✅")
 }
 
 func TestPostUserWithInvalidPayload(t *testing.T) {
-	requestBody := RequestBodyParser(request.UserRequest{})
-	request := httptest.NewRequest(fiber.MethodPost, "/api/users/register", requestBody)
+	request := httptest.NewRequest(fiber.MethodPost, "/api/users/register", nil)
 	request.Header.Set("Content-Type", "application/json")
 
 	response, err := App.Test(request)
@@ -92,13 +93,14 @@ func TestVerifyUserWithValidPayload(t *testing.T) {
 	assert.NotEmpty(t, user["id"])
 	assert.Equal(t, "username 1", user["username"])
 	assert.Equal(t, "email1@mail.com", user["email"])
+	assert.Nil(t, user["bio"])
+	assert.Equal(t, false, user["is_email_verified"])
 
 	t.Log("✅")
 }
 
 func TestVerifyUserWithInvalidPayload(t *testing.T) {
-	requestBody := RequestBodyParser(request.UserRequest{})
-	request := httptest.NewRequest(fiber.MethodPost, "/api/users/login", requestBody)
+	request := httptest.NewRequest(fiber.MethodPost, "/api/users/login", nil)
 	request.Header.Set("Content-Type", "application/json")
 
 	response, err := App.Test(request)
@@ -134,6 +136,8 @@ func TestGetUserByIdWithToken(t *testing.T) {
 	assert.NotEmpty(t, user["id"])
 	assert.Equal(t, "username 1", user["username"])
 	assert.Equal(t, "email1@mail.com", user["email"])
+	assert.Nil(t, user["bio"])
+	assert.Equal(t, false, user["is_email_verified"])
 
 	t.Log("✅")
 }
@@ -178,13 +182,14 @@ func TestUpdateUserByIdWithValidPayload(t *testing.T) {
 	assert.NotEmpty(t, user["id"])
 	assert.Equal(t, "username 2", user["username"])
 	assert.Equal(t, "email1@mail.com", user["email"])
+	assert.Nil(t, user["bio"])
+	assert.Equal(t, false, user["is_email_verified"])
 
 	t.Log("✅")
 }
 
 func TestUpdateUserByIdWithInvalidPayload(t *testing.T) {
-	requestBody := RequestBodyParser(request.UserRequest{})
-	request := httptest.NewRequest(fiber.MethodPut, "/api/users", requestBody)
+	request := httptest.NewRequest(fiber.MethodPut, "/api/users", nil)
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Authorization", "Bearer "+JWT)
 

@@ -27,4 +27,12 @@ func TestAll(t *testing.T) {
 		TestUpdateProductByIdWithInvalidPayload(t)
 		TestDeleteProductById(t)
 	})
+
+	t.Run("Email Verification Test", func(t *testing.T) {
+		TestLogin(t)
+		TestSendEmailVerification(t)
+		TestSendEmailVerificationWithoutJWT(t)
+		TestVerifyEmail(t)
+		TestVerifyEmailWithoutToken(t)
+	})
 }

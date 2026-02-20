@@ -17,10 +17,11 @@ func RequestToUser(request *request.UserRequest) *entity.User {
 
 func UserToResponse(user *entity.User) *response.UserResponse {
 	return &response.UserResponse{
-		Id:       user.Id,
-		Username: user.Username,
-		Email:    user.Email,
-		Bio:      user.Bio,
+		Id:              user.Id,
+		Username:        user.Username,
+		Email:           user.Email,
+		Bio:             user.Bio,
+		IsEmailVerified: user.IsEmailVerified,
 	}
 }
 
