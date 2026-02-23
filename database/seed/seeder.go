@@ -36,8 +36,8 @@ func userSeeder(db *gorm.DB) error {
 	}
 
 	user := entity.User{
-		Username: "jihadable",
-		Email:    "umarjihad@gmail.com",
+		Username: "jihadumar",
+		Email:    "jihadumar1021@gmail.com",
 		Password: hashedPassword,
 	}
 
@@ -91,21 +91,21 @@ func emailVerificationSeeder(db *gorm.DB) error {
 }
 
 func seeder(db *gorm.DB) error {
-	// err := userSeeder(db)
-	// if err != nil {
-	// 	return fmt.Errorf("Fail to seed users")
-	// }
-
-	err := emailVerificationSeeder(db)
+	err := userSeeder(db)
 	if err != nil {
-		return fmt.Errorf("Fail to seed email verifications")
+		return fmt.Errorf("Fail to seed users")
 	}
+
+	// err = emailVerificationSeeder(db)
+	// if err != nil {
+	// 	return fmt.Errorf("Fail to seed email verifications")
+	// }
 
 	return nil
 }
 
 func main() {
-	err := godotenv.Load(".env.local")
+	err := godotenv.Load(".env")
 	if err != nil {
 		panic(err)
 	}
