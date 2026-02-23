@@ -10,15 +10,11 @@ type EmailVerificationValidator interface {
 }
 
 type EmailVerificationValidatorImpl struct {
-	Validate *validator.Validate
+	*validator.Validate
 }
 
 func (validator *EmailVerificationValidatorImpl) ValidateVerifyEmailRequest(request request.VerifyEmailRequest) error {
-	err := validator.Validate.Struct(request)
-	if err != nil {
-		return err
-	}
-	return nil
+	return validator.Validate.Struct(request)
 }
 
 func NewEmailVerificationValidator() EmailVerificationValidator {

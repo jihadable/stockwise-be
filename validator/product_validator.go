@@ -7,28 +7,20 @@ import (
 )
 
 type ProductValidator interface {
-	ValidatePostProductRequest(productRequest request.ProductRequest) error
-	ValidatePutProductRequest(productRequest request.ProductRequest) error
+	ValidatePostProductRequest(request request.ProductRequest) error
+	ValidatePutProductRequest(request request.ProductRequest) error
 }
 
 type ProductValidatorImpl struct {
-	Validate *validator.Validate
+	*validator.Validate
 }
 
 func (validator *ProductValidatorImpl) ValidatePostProductRequest(request request.ProductRequest) error {
-	err := validator.Validate.Struct(request)
-	if err != nil {
-		return err
-	}
-	return nil
+	return validator.Validate.Struct(request)
 }
 
 func (validator *ProductValidatorImpl) ValidatePutProductRequest(request request.ProductRequest) error {
-	err := validator.Validate.Struct(request)
-	if err != nil {
-		return err
-	}
-	return nil
+	return validator.Validate.Struct(request)
 }
 
 func NewProductValidator() ProductValidator {

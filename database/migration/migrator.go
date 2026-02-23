@@ -8,16 +8,26 @@ import (
 )
 
 func migrator(db *gorm.DB) error {
-	err := db.Migrator().DropTable(&entity.User{}, &entity.Product{}, &entity.EmailVerification{})
+	err := db.Migrator().DropTable(
+		&entity.User{},
+		&entity.Product{},
+		&entity.EmailVerification{},
+		&entity.PasswordReset{},
+	)
 	if err != nil {
 		return err
 	}
 
-	return db.Migrator().CreateTable(&entity.User{}, &entity.Product{}, &entity.EmailVerification{})
+	return db.Migrator().CreateTable(
+		&entity.User{},
+		&entity.Product{},
+		&entity.EmailVerification{},
+		&entity.PasswordReset{},
+	)
 }
 
 func main() {
-	err := godotenv.Load(".env")
+	err := godotenv.Load(".env.local")
 	if err != nil {
 		panic(err)
 	}

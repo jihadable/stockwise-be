@@ -13,31 +13,19 @@ type UserValidator interface {
 }
 
 type UserValidatorImpl struct {
-	Validate *validator.Validate
+	*validator.Validate
 }
 
 func (validator *UserValidatorImpl) ValidatePostUserRequest(request *request.UserRequest) error {
-	err := validator.Validate.Struct(request)
-	if err != nil {
-		return err
-	}
-	return nil
+	return validator.Validate.Struct(request)
 }
 
 func (validator *UserValidatorImpl) ValidatePutUserRequest(request *request.UpdateUserRequest) error {
-	err := validator.Validate.Struct(request)
-	if err != nil {
-		return err
-	}
-	return nil
+	return validator.Validate.Struct(request)
 }
 
 func (validator *UserValidatorImpl) ValidateVerifyUserRequest(request *request.LoginRequest) error {
-	err := validator.Validate.Struct(request)
-	if err != nil {
-		return err
-	}
-	return nil
+	return validator.Validate.Struct(request)
 }
 
 func NewUserValidator() UserValidator {
