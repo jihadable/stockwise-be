@@ -34,6 +34,10 @@ func (service *EmailVerificationServiceImpl) SendEmailVerification(userId string
 			return err
 		}
 
+		if user.IsEmailVerified {
+			return errors.New("Email is already verified")
+		}
+
 		emailTarget = user.Email
 
 		token, err = helper.GetToken()
@@ -80,7 +84,7 @@ func (service *EmailVerificationServiceImpl) VerifyEmail(token string) error {
 		}
 
 		if result.RowsAffected == 0 {
-			return errors.New("User already verified")
+			return errors.New("Email is already verified")
 		}
 
 		err = tx.Delete(&emailVerification).Error

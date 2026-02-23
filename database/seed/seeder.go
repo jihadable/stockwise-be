@@ -91,12 +91,12 @@ func emailVerificationSeeder(db *gorm.DB) error {
 }
 
 func seeder(db *gorm.DB) error {
-	err := userSeeder(db)
-	if err != nil {
-		return fmt.Errorf("Fail to seed users")
-	}
+	// err := userSeeder(db)
+	// if err != nil {
+	// 	return fmt.Errorf("Fail to seed users")
+	// }
 
-	err = emailVerificationSeeder(db)
+	err := emailVerificationSeeder(db)
 	if err != nil {
 		return fmt.Errorf("Fail to seed email verifications")
 	}
