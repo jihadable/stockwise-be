@@ -39,6 +39,7 @@ func main() {
 	routes.RegisterUserRoutes(api, config)
 	routes.RegisterProductRoutes(api, config)
 	routes.RegisterEmailVerificationRoutes(api, config)
+	routes.RegisterPasswordResetRoutes(api, config)
 
 	err = app.Listen(":3000")
 	if err != nil {
