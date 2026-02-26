@@ -35,4 +35,11 @@ func TestAll(t *testing.T) {
 		TestVerifyEmail(t)
 		TestVerifyEmailWithoutToken(t)
 	})
+
+	t.Run("Password Reset Test", func(t *testing.T) {
+		TestSendPasswordResetEmail(t)
+		TestSendPasswordResetEmailWithInvalidEmail(t)
+		TestResetPassword(t)
+		TestResetPasswordWithInvalidToken(t)
+	})
 }

@@ -12,7 +12,7 @@ func RegisterPasswordResetRoutes(api fiber.Router, config *config.Config) {
 	service := services.NewPasswordResetService(config)
 	validator := validator.NewPasswordResetValidator()
 	handler := handlers.NewPasswordResetHandler(service, validator)
-	route := api.Group("/password-reset")
+	route := api.Group("/password-resets")
 
 	route.Post("/send-password-reset-email", handler.SendPasswordResetEmail)
 	route.Post("/reset-password", handler.ResetPassword)
