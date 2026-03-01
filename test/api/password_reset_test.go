@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/gofiber/fiber/v2"
@@ -45,10 +46,21 @@ func TestSendPasswordResetEmailWithInvalidEmail(t *testing.T) {
 }
 
 func TestResetPassword(t *testing.T) {
-	// requestBody := RequestBodyParser(request.ResetPasswordRequest{
-	// 	Token:       os.Getenv("PASSWORD_RESET_TOKEN"),
-	// 	NewPassword: "topsecret123",
-	// })
+	requestBody := RequestBodyParser(request.ResetPasswordRequest{
+		Token:       os.Getenv("PASSWORD_RESET_TOKEN"),
+		NewPassword: "topsecret123",
+	})
+	request := httptest.NewRequest(fiber.MethodPost, "/api/password-resets/reset-password", requestBody)
+	request.Header.Set("Content-Type", "application/json")
+
+	response, err := App.Test(request)
+
+	assert.Nil(t, err)
+	assert.Equal(t, fiber.StatusOK, response.StatusCode)
+
+	responseBody := ResponseBodyParser(request.Body)
+
+	assert.Equal(t, "success", responseBody["status"])
 }
 
 func TestResetPasswordWithInvalidToken(t *testing.T) {

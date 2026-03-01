@@ -50,44 +50,62 @@ func userSeeder(db *gorm.DB) error {
 }
 
 func emailVerificationSeeder(db *gorm.DB) error {
-	return db.Transaction(func(tx *gorm.DB) error {
-		hashedPassword, err := helper.HashPassword(os.Getenv("PRIVATE_PASSWORD"))
-		if err != nil {
-			return fmt.Errorf("Fail to hash password")
-		}
+	user := entity.User{}
 
-		user := entity.User{
-			Username: "jihadumar",
-			Email:    "jihadumar1021@gmail.com",
-			Password: hashedPassword,
-		}
+	err := db.Where("email = ?", "jihadumar1021@gmail.com").Error
+	if err != nil {
+		return err
+	}
 
-		err = tx.Create(&user).Error
-		if err != nil {
-			return err
-		}
+	token, err := helper.GetToken()
+	if err != nil {
+		return err
+	}
+	expireAt := time.Now().Add(24 * time.Hour)
 
-		token, err := helper.GetToken()
-		if err != nil {
-			return err
-		}
-		expireAt := time.Now().Add(24 * time.Hour)
+	emailVerification := entity.EmailVerification{
+		Token:    token,
+		UserId:   user.Id,
+		ExpireAt: expireAt,
+	}
 
-		emailVerification := entity.EmailVerification{
-			Token:    token,
-			UserId:   user.Id,
-			ExpireAt: expireAt,
-		}
+	err = db.Create(&emailVerification).Error
+	if err != nil {
+		return err
+	}
 
-		err = tx.Create(&emailVerification).Error
-		if err != nil {
-			return err
-		}
+	fmt.Println("Email verification token:", emailVerification.Token)
 
-		fmt.Println(token)
+	return nil
+}
 
-		return nil
-	})
+func passwordResetSeeder(db *gorm.DB) error {
+	user := entity.User{}
+
+	err := db.Where("email = ?", "jihadumar1021@gmail.com").First(&user).Error
+	if err != nil {
+		return err
+	}
+
+	token, err := helper.GetToken()
+	if err != nil {
+		return err
+	}
+	expireAt := time.Now().Add(24 * time.Hour)
+
+	passwordReset := entity.PasswordReset{
+		Token:    token,
+		ExpireAt: expireAt,
+		UserId:   user.Id,
+	}
+	err = db.Create(&passwordReset).Error
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Password reset token:", passwordReset.Token)
+
+	return nil
 }
 
 func seeder(db *gorm.DB) error {
@@ -96,10 +114,15 @@ func seeder(db *gorm.DB) error {
 		return fmt.Errorf("Fail to seed users")
 	}
 
-	// err = emailVerificationSeeder(db)
-	// if err != nil {
-	// 	return fmt.Errorf("Fail to seed email verifications")
-	// }
+	err = emailVerificationSeeder(db)
+	if err != nil {
+		return fmt.Errorf("Fail to seed email verifications")
+	}
+
+	err = passwordResetSeeder(db)
+	if err != nil {
+		return fmt.Errorf("Fail to seed password resets")
+	}
 
 	return nil
 }
