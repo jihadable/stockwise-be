@@ -52,7 +52,7 @@ func userSeeder(db *gorm.DB) error {
 func emailVerificationSeeder(db *gorm.DB) error {
 	user := entity.User{}
 
-	err := db.Where("email = ?", "jihadumar1021@gmail.com").Error
+	err := db.Where("email = ?", "jihadumar1021@gmail.com").First(&user).Error
 	if err != nil {
 		return err
 	}

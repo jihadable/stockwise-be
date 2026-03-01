@@ -31,7 +31,7 @@ func (service *PasswordResetServiceImpl) SendPasswordResetEmail(email string) er
 	err := service.DB.Transaction(func(tx *gorm.DB) error {
 		user := entity.User{}
 
-		err := tx.Where("email = ?").First(&user).Error
+		err := tx.Where("email = ?", email).First(&user).Error
 		if err != nil {
 			return err
 		}

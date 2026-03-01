@@ -22,9 +22,11 @@ func TestSendPasswordResetEmail(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, fiber.StatusOK, response.StatusCode)
 
-	responseBody := ResponseBodyParser(request.Body)
+	responseBody := ResponseBodyParser(response.Body)
 
 	assert.Equal(t, "success", responseBody["status"])
+
+	t.Log("✅")
 }
 
 func TestSendPasswordResetEmailWithInvalidEmail(t *testing.T) {
@@ -43,6 +45,8 @@ func TestSendPasswordResetEmailWithInvalidEmail(t *testing.T) {
 
 	assert.Equal(t, "fail", responseBody["status"])
 	assert.NotEmpty(t, responseBody["message"])
+
+	t.Log("✅")
 }
 
 func TestResetPassword(t *testing.T) {
@@ -58,9 +62,11 @@ func TestResetPassword(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, fiber.StatusOK, response.StatusCode)
 
-	responseBody := ResponseBodyParser(request.Body)
+	responseBody := ResponseBodyParser(response.Body)
 
 	assert.Equal(t, "success", responseBody["status"])
+
+	t.Log("✅")
 }
 
 func TestResetPasswordWithInvalidToken(t *testing.T) {
@@ -80,4 +86,6 @@ func TestResetPasswordWithInvalidToken(t *testing.T) {
 
 	assert.Equal(t, "fail", responseBody["status"])
 	assert.NotEmpty(t, responseBody["message"])
+
+	t.Log("✅")
 }
