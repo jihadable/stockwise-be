@@ -1,6 +1,8 @@
 package services
 
 import (
+	"errors"
+
 	"github.com/jihadable/stockwise-be/config"
 	"github.com/jihadable/stockwise-be/helper"
 	"github.com/jihadable/stockwise-be/model/entity"
@@ -14,6 +16,7 @@ type UserService interface {
 	GetUserById(id string) (*entity.User, error)
 	UpdateUserById(id string, user *entity.User) (*entity.User, error)
 	VerifyUser(email, password string) (*entity.User, error)
+	UpdatePassword(id, newPassword string) (*entity.User, error)
 }
 
 type UserServiceImpl struct {
@@ -77,6 +80,34 @@ func (service *UserServiceImpl) VerifyUser(email, password string) (*entity.User
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (service *UserServiceImpl) UpdatePassword(id, newPassword string) (*entity.User, error) {
+	user := entity.User{}
+
+	err := service.DB.Where("id = ?", id).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(newPassword))
+	if err == nil {
+		return nil, errors.New("New password can not be same as old password")
+	}
+
+	hashedNewPassword, err := helper.HashPassword(newPassword)
+	if err != nil {
+		return nil, err
+	}
+
+	user.Password = hashedNewPassword
+
+	err = service.DB.Updates(&user).Error
 	if err != nil {
 		return nil, err
 	}

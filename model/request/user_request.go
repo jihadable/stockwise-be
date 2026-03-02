@@ -16,3 +16,7 @@ type UpdateUserRequest struct {
 	Username string  `json:"username" validate:"required"`
 	Bio      *string `json:"bio"`
 }
+
+type UpdatePasswordRequest struct {
+	NewPasswrod string `json:"new_password" validate:"required"`
+}

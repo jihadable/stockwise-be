@@ -15,6 +15,7 @@ type UserHandler interface {
 	GetUserById(ctx *fiber.Ctx) error
 	PutUserById(ctx *fiber.Ctx) error
 	VerifyUser(ctx *fiber.Ctx) error
+	UpdatePassword(ctx *fiber.Ctx) error
 }
 
 type UserHandlerImpl struct {
@@ -30,7 +31,7 @@ func (handler *UserHandlerImpl) PostUser(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	err = handler.Validator.ValidatePostUserRequest(&requestBody)
+	err = handler.Validator.ValidatePostUserRequest(requestBody)
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
 	}
@@ -84,7 +85,7 @@ func (handler *UserHandlerImpl) PutUserById(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid resquest body")
 	}
 
-	err = handler.Validator.ValidatePutUserRequest(&requestBody)
+	err = handler.Validator.ValidatePutUserRequest(requestBody)
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid resquest body")
 	}
@@ -113,7 +114,7 @@ func (handler *UserHandlerImpl) VerifyUser(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	err = handler.Validator.ValidateVerifyUserRequest(&requestBody)
+	err = handler.Validator.ValidateVerifyUserRequest(requestBody)
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
 	}
@@ -133,6 +134,34 @@ func (handler *UserHandlerImpl) VerifyUser(ctx *fiber.Ctx) error {
 		"data": fiber.Map{
 			"user": mapper.UserToResponse(user),
 			"jwt":  jwt,
+		},
+	})
+}
+
+func (handler *UserHandlerImpl) UpdatePassword(ctx *fiber.Ctx) error {
+	userId := ctx.Locals("user_id").(string)
+
+	requestBody := request.UpdatePasswordRequest{}
+
+	err := ctx.BodyParser(&requestBody)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
+	}
+
+	err = handler.Validator.ValidateUpdatePasswordRequest(requestBody)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
+	}
+
+	user, err := handler.Service.UpdatePassword(userId, requestBody.NewPasswrod)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Fail to change password")
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status": "success",
+		"data": fiber.Map{
+			"user": user,
 		},
 	})
 }
