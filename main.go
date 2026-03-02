@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/jihadable/stockwise-be/config"
 	"github.com/jihadable/stockwise-be/middlewares"
-	"github.com/jihadable/stockwise-be/model/entity"
 	"github.com/jihadable/stockwise-be/routes"
 
 	"github.com/gofiber/fiber/v2"
@@ -29,11 +28,6 @@ func main() {
 	config := &config.Config{
 		DB:    config.DB(),
 		Redis: config.Redis(),
-	}
-
-	err = config.DB.AutoMigrate(&entity.User{}, &entity.Product{}, &entity.EmailVerification{})
-	if err != nil {
-		panic(err)
 	}
 
 	routes.RegisterUserRoutes(api, config)

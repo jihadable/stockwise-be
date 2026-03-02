@@ -114,15 +114,15 @@ func seeder(db *gorm.DB) error {
 		return fmt.Errorf("Fail to seed users")
 	}
 
-	err = emailVerificationSeeder(db)
-	if err != nil {
-		return fmt.Errorf("Fail to seed email verifications")
-	}
+	// err = emailVerificationSeeder(db)
+	// if err != nil {
+	// 	return fmt.Errorf("Fail to seed email verifications")
+	// }
 
-	err = passwordResetSeeder(db)
-	if err != nil {
-		return fmt.Errorf("Fail to seed password resets")
-	}
+	// err = passwordResetSeeder(db)
+	// if err != nil {
+	// 	return fmt.Errorf("Fail to seed password resets")
+	// }
 
 	return nil
 }
