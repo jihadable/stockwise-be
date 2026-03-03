@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http/httptest"
 	"testing"
 
@@ -199,6 +200,78 @@ func TestUpdateUserByIdWithInvalidPayload(t *testing.T) {
 	assert.Equal(t, fiber.StatusBadRequest, response.StatusCode)
 
 	responseBody := ResponseBodyParser(response.Body)
+	assert.Equal(t, "fail", responseBody["status"])
+	assert.NotEmpty(t, responseBody["message"])
+
+	t.Log("✅")
+}
+
+func TestUpdatePassword(t *testing.T) {
+	requestBody := RequestBodyParser(request.UpdatePasswordRequest{
+		OldPasswrod: "password 1",
+		NewPasswrod: "password 2",
+	})
+	request := httptest.NewRequest(fiber.MethodPost, "/api/users/change-password", requestBody)
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Authorization", "Bearer "+JWT)
+
+	response, err := App.Test(request)
+
+	assert.Nil(t, err)
+	assert.Equal(t, fiber.StatusOK, response.StatusCode)
+
+	responseBody := ResponseBodyParser(response.Body)
+	assert.Equal(t, "success", responseBody["status"])
+
+	data, ok := responseBody["data"].(map[string]any)
+	assert.True(t, ok)
+
+	user, ok := data["user"].(map[string]any)
+	assert.True(t, ok)
+
+	assert.NotEmpty(t, user["id"])
+	assert.Equal(t, "username 2", user["username"])
+	assert.Equal(t, "email1@mail.com", user["email"])
+	assert.Nil(t, user["bio"])
+	assert.Equal(t, false, user["is_email_verified"])
+
+	t.Log("✅")
+}
+
+func TestUpdatePasswordWithInvalidPayload(t *testing.T) {
+	request := httptest.NewRequest(fiber.MethodPost, "/api/users/change-password", nil)
+	request.Header.Set("Authorization", "Bearer "+JWT)
+
+	response, err := App.Test(request)
+
+	assert.Nil(t, err)
+	assert.Equal(t, fiber.StatusBadRequest, response.StatusCode)
+
+	responseBody := ResponseBodyParser(response.Body)
+
+	fmt.Println(responseBody)
+
+	assert.Equal(t, "fail", responseBody["status"])
+	assert.NotEmpty(t, responseBody["message"])
+
+	t.Log("✅")
+}
+
+func TestUpdatePasswordWithoutJWT(t *testing.T) {
+	requestBody := RequestBodyParser(request.UpdatePasswordRequest{
+		OldPasswrod: "password 2",
+		NewPasswrod: "password 3",
+	})
+	request := httptest.NewRequest(fiber.MethodPost, "/api/users/change-password", requestBody)
+	request.Header.Set("Content-Type", "application/json")
+
+	response, err := App.Test(request)
+
+	assert.Nil(t, err)
+	assert.Equal(t, fiber.StatusUnauthorized, response.StatusCode)
+
+	responseBody := ResponseBodyParser(response.Body)
+
 	assert.Equal(t, "fail", responseBody["status"])
 	assert.NotEmpty(t, responseBody["message"])
 

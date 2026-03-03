@@ -20,5 +20,5 @@ func RegisterUserRoutes(api fiber.Router, config *config.Config) {
 	route.Get("/", middlewares.AuthMiddleware(), handler.GetUserById)
 	route.Put("/", middlewares.AuthMiddleware(), handler.PutUserById)
 	route.Post("/login", handler.VerifyUser)
-	route.Post("/change-password", handler.UpdatePassword)
+	route.Post("/change-password", middlewares.AuthMiddleware(), handler.UpdatePassword)
 }

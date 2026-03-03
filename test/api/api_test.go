@@ -12,6 +12,9 @@ func TestAll(t *testing.T) {
 		TestGetUserByIdWithoutToken(t)
 		TestUpdateUserByIdWithValidPayload(t)
 		TestUpdateUserByIdWithInvalidPayload(t)
+		TestUpdatePassword(t)
+		TestUpdatePasswordWithInvalidPayload(t)
+		TestUpdatePasswordWithoutJWT(t)
 	})
 
 	t.Run("Product Test", func(t *testing.T) {

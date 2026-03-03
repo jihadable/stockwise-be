@@ -16,7 +16,7 @@ type UserService interface {
 	GetUserById(id string) (*entity.User, error)
 	UpdateUserById(id string, user *entity.User) (*entity.User, error)
 	VerifyUser(email, password string) (*entity.User, error)
-	UpdatePassword(id, newPassword string) (*entity.User, error)
+	UpdatePassword(id, oldPassword, newPassword string) (*entity.User, error)
 }
 
 type UserServiceImpl struct {
@@ -87,17 +87,16 @@ func (service *UserServiceImpl) VerifyUser(email, password string) (*entity.User
 	return &user, nil
 }
 
-func (service *UserServiceImpl) UpdatePassword(id, newPassword string) (*entity.User, error) {
+func (service *UserServiceImpl) UpdatePassword(id, oldPassword, newPassword string) (*entity.User, error) {
+	if oldPassword == newPassword {
+		return nil, errors.New("New password can not be same as old password")
+	}
+
 	user := entity.User{}
 
 	err := service.DB.Where("id = ?", id).First(&user).Error
 	if err != nil {
 		return nil, err
-	}
-
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(newPassword))
-	if err == nil {
-		return nil, errors.New("New password can not be same as old password")
 	}
 
 	hashedNewPassword, err := helper.HashPassword(newPassword)

@@ -17,7 +17,7 @@ func TestSendPasswordResetEmail(t *testing.T) {
 	request := httptest.NewRequest(fiber.MethodPost, "/api/password-resets/send-password-reset-email", requestBody)
 	request.Header.Set("Content-Type", "application/json")
 
-	response, err := App.Test(request)
+	response, err := App.Test(request, -1)
 
 	assert.Nil(t, err)
 	assert.Equal(t, fiber.StatusOK, response.StatusCode)

@@ -153,7 +153,7 @@ func (handler *UserHandlerImpl) UpdatePassword(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	user, err := handler.Service.UpdatePassword(userId, requestBody.NewPasswrod)
+	user, err := handler.Service.UpdatePassword(userId, requestBody.OldPasswrod, requestBody.NewPasswrod)
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Fail to change password")
 	}
