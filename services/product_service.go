@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/jihadable/stockwise-be/config"
@@ -73,6 +74,7 @@ func (service *ProductServiceImpl) GetProductById(id string) (*entity.Product, e
 		err = json.Unmarshal([]byte(productInRedis), &product)
 
 		if err == nil {
+			fmt.Println("ambil dari redis")
 			return &product, nil
 		}
 	}
