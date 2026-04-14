@@ -69,10 +69,10 @@ func (service *ProductServiceImpl) GetProductById(id string) (*entity.Product, e
 	product := entity.Product{}
 
 	productInRedis, err := service.Redis.Get(ctx, redisKey).Result()
-	if err != nil && productInRedis != "" {
+	if err == nil && productInRedis != "" {
 		err = json.Unmarshal([]byte(productInRedis), &product)
 
-		if err != nil {
+		if err == nil {
 			return &product, nil
 		}
 	}
