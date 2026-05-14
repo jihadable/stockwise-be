@@ -211,7 +211,7 @@ func TestUpdatePassword(t *testing.T) {
 		OldPasswrod: "password 1",
 		NewPasswrod: "password 2",
 	})
-	request := httptest.NewRequest(fiber.MethodPost, "/api/users/change-password", requestBody)
+	request := httptest.NewRequest(fiber.MethodPatch, "/api/users/update-password", requestBody)
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Authorization", "Bearer "+JWT)
 
@@ -239,7 +239,7 @@ func TestUpdatePassword(t *testing.T) {
 }
 
 func TestUpdatePasswordWithInvalidPayload(t *testing.T) {
-	request := httptest.NewRequest(fiber.MethodPost, "/api/users/change-password", nil)
+	request := httptest.NewRequest(fiber.MethodPatch, "/api/users/update-password", nil)
 	request.Header.Set("Authorization", "Bearer "+JWT)
 
 	response, err := App.Test(request)
@@ -262,7 +262,7 @@ func TestUpdatePasswordWithoutJWT(t *testing.T) {
 		OldPasswrod: "password 2",
 		NewPasswrod: "password 3",
 	})
-	request := httptest.NewRequest(fiber.MethodPost, "/api/users/change-password", requestBody)
+	request := httptest.NewRequest(fiber.MethodPatch, "/api/users/update-password", requestBody)
 	request.Header.Set("Content-Type", "application/json")
 
 	response, err := App.Test(request)
